@@ -1,0 +1,24 @@
+{
+  "_catatan": "Entri riset berstatus draf. File ini tidak dimuat oleh situs. Pindahkan ke data/catalogue.js hanya setelah semua butir konfirmasi terpenuhi.",
+  "drafts": [
+    {
+      "status": "draf",
+      "artist": "Sekar Puti",
+      "title": "It’s About Time",
+      "year": 2022,
+      "category": "patung",
+      "medium": "Keramik",
+      "sumber": "ELLE Indonesia mengidentifikasi karya ini dalam dokumentasi rumah Rossa, Desember 2022.",
+      "referensi": "https://elle.co.id/culture/elemen-nyaman-sarat-unsur-hiburan-yang-membangun-tempat-tinggal-rossa",
+      "perluKonfirmasiDariTimRossa": [
+        "Status koleksi saat ini",
+        "Dimensi (tinggi × lebar × dalam, dengan satuan)",
+        "Foto reproduksi (foto utuh, dua sudut, dan foto detail)",
+        "Persetujuan penayangan"
+      ]
+    }
+  ],
+  "menunggu": [
+    "Lukisan: data seniman dan judul dari inventaris."
+  ]
+}
