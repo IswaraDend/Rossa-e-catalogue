@@ -115,6 +115,15 @@ Ditandai di `content.js`:
   - Paragraf 1, 2, dan 4 biografi, kolom data, dan tonggak perjalanan (sumber publik, lihat bagian 8)
   - Biografi Aditya Sena Hadikusumo dan entri TEGAR (ukuran, material, dan tahun dikosongkan karena belum final)
 
+## 6a. Tambahan dari brief (Draft v1 + brief)
+
+- **Karya contoh**: semua karya dan seniman [DUMMY] kini bertanda `sample: true`. Selama `settings.showSamples: true`, contoh tetap tampil untuk melihat tata letak. **Ubah ke `false` sebelum tayang**; halaman publik tidak boleh memuat karya contoh.
+- **Entri riset berstatus draf** (Sekar Puti, *It’s About Time*) disimpan di `research/drafts.json`, di luar data publik. Situs tidak memuat file itu.
+- **Halaman Biografi**: judul "Rossa, sang kolektor" (`bioTitle`), biografi dari copy website, potret Medcom ID 4:5 monokrom (`bioPortrait`), label liputan ELLE (`coverage`), dan foto konser 2017 di samping tonggak perjalanan (`stagePhoto`). Kedua foto diambil dari Wikimedia Commons beserta kredit dan lisensinya.
+- **Cerita kolektor** (`collector.story`): ruang untuk cerita akuisisi pertama atau alasan memilih satu karya. Isi hanya setelah Rossa menyampaikannya sendiri; selama kosong, bagian ini tidak tampil.
+- **Field karya baru**: `collectorNote` (catatan kolektor), `details` (foto detail), `credit` (kredit dokumentasi). Semua opsional dan disembunyikan bila kosong.
+- Foto utama beranda masih potret `images/rossa/rossa-portrait.jpg`. Pastikan sumber dan izin publikasinya sebelum tayang. Foto pemotretan ELLE (Gavriela Go, Desember 2022) hanya dipakai bila ada master dan izin dari pemegang hak.
+
 ## 7. Tayang online dan QR di samping karya
 
 Folder ini bisa langsung diunggah ke hosting statis apa pun (Netlify, Vercel, GitHub Pages, atau hosting cPanel biasa) tanpa pengaturan tambahan.

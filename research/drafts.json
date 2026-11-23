@@ -1,5 +1,5 @@
 {
-  "_catatan": "Entri riset berstatus draf. File ini tidak dimuat oleh situs. Pindahkan ke data/catalogue.js hanya setelah semua butir konfirmasi terpenuhi.",
+  "_catatan": "Entri riset berstatus draf. File ini tidak dimuat oleh situs. Pindahkan ke content.js (bagian 5) hanya setelah semua butir konfirmasi terpenuhi.",
   "drafts": [
     {
       "status": "draf",

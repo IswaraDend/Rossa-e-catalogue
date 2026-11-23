@@ -31,6 +31,10 @@ window.SITE = {
     languages: ["id", "en"],        // hapus salah satu untuk situs satu bahasa
 
     draftLabel: "Draft v1",         // label kecil penanda draf. Kosongkan ("") saat situs siap tayang.
+
+    // Karya dan seniman bertanda  sample: true  adalah contoh tata letak.
+    // WAJIB diubah ke false sebelum tayang: halaman publik tidak boleh memuat karya contoh.
+    showSamples: true,
     contactEmail: ""                // isi bila ingin tautan kontak tampil, contoh "hello@domain.com"
   },
 
@@ -50,8 +54,26 @@ window.SITE = {
 
     // Paragraf pendek di beranda
     intro: {
-      id: "Dikenal lewat suaranya di Indonesia dan negeri-negeri berbahasa Melayu, Rossa juga seorang kolektor seni rupa. Katalog ini menghimpun koleksinya: lukisan, patung, dan para seniman di baliknya.",
-      en: "Known for her voice across Indonesia and the Malay-speaking world, Rossa is also a collector of art. This catalogue brings her collection together: painting, sculpture, and the artists behind them."
+      id: "Lukisan dan patung dari koleksi pribadi Rossa.",
+      en: "Paintings and sculpture from Rossa's private collection."
+    },
+
+    // Judul halaman Biografi. Bagian di antara bintang tampil miring di baris kedua.
+    bioTitle: { id: "Rossa, *sang kolektor*", en: "Rossa, *the collector*" },
+
+    // Potret di halaman Biografi: panel kecil di sebelah teks, crop 4:5, monokrom.
+    // Still wawancara Medcom ID, 19 Mei 2023 (file sumber 541 × 768 px).
+    bioPortrait: {
+      src: "https://upload.wikimedia.org/wikipedia/commons/5/50/Rossa_at_Ngobras_Special_Medcom_ID.png",
+      width: 541, height: 768,
+      alt: { id: "Rossa tertawa sambil memegang mikrofon dalam wawancara Medcom ID.",
+             en: "Rossa laughing as she holds a microphone during a Medcom ID interview." },
+      credit: {
+        text: { id: "Rossa dalam wawancara, 2023. Still oleh", en: "Rossa in an interview, 2023. Still by" },
+        source: { label: "Medcom ID", href: "https://commons.wikimedia.org/wiki/File:Rossa_at_Ngobras_Special_Medcom_ID.png" },
+        license: { label: "CC BY 3.0", href: "https://creativecommons.org/licenses/by/3.0/" },
+        note: { id: "Crop dan konversi monokrom untuk katalog.", en: "Cropped and converted to monochrome for the catalogue." }
+      }
     },
 
     // Kalimat besar di halaman Biografi
@@ -60,32 +82,42 @@ window.SITE = {
       en: "Painting, sculpture, and whatever comes next."
     },
 
-    // Paragraf biografi, tampil berurutan
+    // Paragraf biografi, tampil berurutan. Paragraf 1 dan 2 dari copy website.
     biography: [
-      // [CEK] Paragraf 1 dan 2 berdasarkan sumber publik (Wikipedia, rossaofficial.com, Apple Music).
       {
-        id: "Sri Rossa Roslaina Handiyani lahir di Sumedang, Jawa Barat, pada 9 Oktober 1978. Ibunya, Eni Kusmiani, adalah penembang Cianjuran, seni vokal klasik Sunda, dan dari sisi ibunya Rossa pertama kali mengenal musik. Album pertamanya, *Gadis Ingusan*, dirilis pada 1988 saat ia masih kanak-kanak.",
-        en: "Sri Rossa Roslaina Handiyani was born in Sumedang, West Java, on 9 October 1978. Her mother, Eni Kusmiani, is a singer of tembang Cianjuran, the classical Sundanese vocal art, and it was at her side that Rossa first came to music. Her first album, *Gadis Ingusan*, was released in 1988, when she was still a child."
+        id: "Di rumah Rossa, lukisan berukuran besar mendapat tempat di ruang yang diterangi cahaya jendela. Saat berbincang dengan ELLE Indonesia pada 2022, ia bercerita tentang perubahan seleranya dalam menata rumah. Ia mulai menghadirkan karya kontemporer dengan warna yang lebih berani. Baginya, melihat karya-karya itu di rumah membawa kegembiraan tersendiri.",
+        // [CEK] terjemahan Inggris
+        en: "In Rossa's home, large paintings are given space in rooms lit by the windows. Speaking with ELLE Indonesia in 2022, she described how her taste in furnishing her home had changed. She began bringing in contemporary works in bolder colours. For her, seeing those works at home brings a joy of its own."
       },
       {
-        id: "Namanya melambung lewat *Nada-Nada Cinta* pada 1996. Album *Tegar* menyusul pada 1999 dan meraih sertifikasi multi-platinum. Sejak itu Rossa menjadi salah satu penyanyi dengan penjualan album terbesar di Indonesia, dikenal luas di Indonesia dan negeri-negeri berbahasa Melayu, dan di Malaysia disapa Dato' Sri Rossa. Di luar musik, ia membangun usaha di bidang kecantikan dan wewangian.",
-        en: "Her breakthrough came with *Nada-Nada Cinta* in 1996. The album *Tegar* followed in 1999 and earned multiple platinum certifications. She has since become one of Indonesia's best-selling recording artists, widely known across Indonesia and the Malay-speaking world, and in Malaysia as Dato' Sri Rossa. Beyond music, she has built businesses in beauty and fragrance."
+        id: "Publik mengenal Rossa lewat lagu seperti *Tegar*, ciptaan Melly Goeslaw yang ia bawakan pada 1999. Di katalog ini, ia hadir sebagai kolektor. Melalui pilihan lukisan dan patung dari koleksi pribadinya, pengunjung diajak melihat karya-karya yang selama ini ia nikmati dari dekat.",
+        // [CEK] terjemahan Inggris
+        en: "The public knows Rossa through songs such as *Tegar*, written by Melly Goeslaw and recorded by her in 1999. In this catalogue she appears as a collector. Through a selection of paintings and sculptures from her private collection, visitors are invited to see up close the works she has long enjoyed."
       },
-      // [DUMMY] Paragraf 3: sisi Rossa sebagai kolektor. Ganti dengan cerita asli dari tim Rossa.
-      {
-        id: "Di luar panggung, Rossa hidup berdampingan dengan karya seni. Koleksinya mencakup lukisan dan patung, dan tetap terbuka bagi medium lain. Ia memilih karya yang ingin ia tinggali bersama, bukan sekadar pengisi dinding.",
-        en: "Away from the stage, Rossa lives alongside art. Her collection spans painting and sculpture, and it stays open to other media. She chooses works she wants to live with, not works to fill a wall."
-      },
-      // [CEK] Paragraf 4: komisi TEGAR.
+      // [CEK] Komisi TEGAR.
       {
         id: "Rossa juga mengoleksi lewat komisi. *TEGAR*, patung yang berangkat dari lagunya tahun 1999, saat ini sedang diciptakan untuknya oleh Aditya Sena Hadikusumo.",
         en: "Rossa also collects through commission. *TEGAR*, a sculpture drawn from her 1999 song, is currently being created for her by Aditya Sena Hadikusumo."
-      },
-      {
-        id: "Katalog ini menghimpun koleksi tersebut di satu tempat: karya-karyanya, para senimannya, dan cerita di balik setiap karya.",
-        en: "This catalogue gathers the collection in one place: the works, the artists, and the story behind each piece."
       }
     ],
+
+    // Cerita akuisisi pertama atau alasan memilih satu karya.
+    // Isi HANYA setelah Rossa menyampaikannya sendiri. Selama paragraphs kosong, bagian ini tidak tampil.
+    // work (opsional) = slug karya yang diceritakan.
+    story: {
+      title: "",
+      paragraphs: [],
+      work: ""
+    },
+
+    // Label liputan, tampil di bawah biografi.
+    coverage: {
+      title: { id: "Di rumah Rossa", en: "At Rossa's home" },
+      text: { id: "Dalam episode *My Home My Style*, Rossa memperlihatkan sejumlah karya favorit di kediamannya.",
+              en: "In an episode of *My Home My Style*, Rossa shows a number of her favourite works at home." },
+      link: { label: { id: "Tonton liputan ELLE Indonesia", en: "Watch the ELLE Indonesia feature" },
+              href: "https://elle.co.id/elle-tv/rossa-unjuk-koleksi-seni-yang-menghidupkan-karakter-rumahnya-my-home-my-style" }
+    },
 
     // Kolom data singkat di halaman Biografi. Baris "Koleksi" dibuat otomatis dari daftar kategori.
     facts: [
@@ -98,6 +130,19 @@ window.SITE = {
       // [DUMMY] contoh baris tambahan:
       // { label: { id: "Mulai mengoleksi", en: "Collecting since" }, value: "20XX" },
     ],
+
+    // Foto arsip karier di samping tonggak perjalanan. Berwarna, rasio asli.
+    stagePhoto: {
+      src: "https://upload.wikimedia.org/wikipedia/commons/1/14/ROSSA_THE_JOURNEY_OF_21_DAZZLING_YEARS_%282017%29.jpg",
+      width: 1291, height: 1614,
+      alt: { id: "Rossa di atas panggung konser The Journey of 21 Dazzling Years, 2017.",
+             en: "Rossa on stage at The Journey of 21 Dazzling Years concert, 2017." },
+      credit: {
+        text: { id: "Konser *The Journey of 21 Dazzling Years*, 2017. Foto:", en: "*The Journey of 21 Dazzling Years* concert, 2017. Photo:" },
+        source: { label: "Nash Rassudin", href: "https://commons.wikimedia.org/wiki/File:ROSSA_THE_JOURNEY_OF_21_DAZZLING_YEARS_(2017).jpg" },
+        license: { label: "CC BY-SA 4.0", href: "https://creativecommons.org/licenses/by-sa/4.0/" }
+      }
+    },
 
     // Tonggak perjalanan. [CEK] semua tahun berdasarkan sumber publik.
     milestones: [
@@ -184,7 +229,7 @@ window.SITE = {
     },
     {
       // [DUMMY] seluruh isi seniman ini
-      slug: "nama-pelukis",
+      slug: "nama-pelukis", sample: true,
       name: { id: "Nama Pelukis", en: "Painter's Name" },
       born: { id: "Kota, tahun", en: "City, year" },
       based: { id: "Kota", en: "City" },
@@ -198,7 +243,7 @@ window.SITE = {
     },
     {
       // [DUMMY] seluruh isi seniman ini
-      slug: "nama-perupa",
+      slug: "nama-perupa", sample: true,
       name: { id: "Nama Perupa", en: "Artist's Name" },
       born: { id: "Kota, tahun", en: "City, year" },
       based: { id: "Kota", en: "City" },
@@ -212,7 +257,7 @@ window.SITE = {
     },
     {
       // [DUMMY] seluruh isi seniman ini
-      slug: "nama-pematung",
+      slug: "nama-pematung", sample: true,
       name: { id: "Nama Pematung", en: "Sculptor's Name" },
       born: { id: "Kota, tahun", en: "City, year" },
       based: { id: "Kota", en: "City" },
@@ -241,6 +286,10 @@ window.SITE = {
                 Ukuran dipakai untuk skala tampilan, jadi isi seakurat mungkin.
      image    = path foto. Lukisan: foto lurus, dipotong pas di tepi kanvas.
                 Patung: paling bagus PNG berlatar transparan.
+     collectorNote = catatan Rossa tentang karya (opsional, tampil bila diisi)
+     details  = foto detail (opsional): [ { src: "images/works/x-detail-1.jpg", alt: "..." } ]
+     credit   = kredit dokumentasi foto (opsional), contoh "Foto: Nama Fotografer"
+     sample   = true untuk karya contoh; disembunyikan saat settings.showSamples = false
      tone     = warna bidang pengganti saat foto belum ada:
                 ochre, rosewood, sage, slate, champagne, teal, blush,
                 bronze, teak, stone, metal, ink
@@ -249,7 +298,7 @@ window.SITE = {
   works: [
     // [DUMMY] karya 1 sampai 11: data contoh, ganti dengan karya asli.
     {
-      slug: "tanpa-judul-1", code: "RC-001",
+      slug: "tanpa-judul-1", sample: true, code: "RC-001",
       title: { id: "Tanpa Judul I", en: "Untitled I" },
       artist: "nama-pelukis", category: "lukisan",
       year: "2019",
@@ -260,7 +309,7 @@ window.SITE = {
               en: "A short note on the work: its subject, its technique, or how it came into the collection." }
     },
     {
-      slug: "tanpa-judul-2", code: "RC-002",
+      slug: "tanpa-judul-2", sample: true, code: "RC-002",
       title: { id: "Tanpa Judul II", en: "Untitled II" },
       artist: "nama-pelukis", category: "lukisan",
       year: "2021",
@@ -271,7 +320,7 @@ window.SITE = {
               en: "A short note on the work: its subject, its technique, or how it came into the collection." }
     },
     {
-      slug: "tanpa-judul-3", code: "RC-003",
+      slug: "tanpa-judul-3", sample: true, code: "RC-003",
       title: { id: "Tanpa Judul III", en: "Untitled III" },
       artist: "nama-pelukis", category: "lukisan",
       year: "2022",
@@ -282,7 +331,7 @@ window.SITE = {
               en: "A short note on the work: its subject, its technique, or how it came into the collection." }
     },
     {
-      slug: "tanpa-judul-4", code: "RC-004",
+      slug: "tanpa-judul-4", sample: true, code: "RC-004",
       title: { id: "Tanpa Judul IV", en: "Untitled IV" },
       artist: "nama-pelukis", category: "lukisan",
       year: "2023",
@@ -293,7 +342,7 @@ window.SITE = {
               en: "A short note on the work: its subject, its technique, or how it came into the collection." }
     },
     {
-      slug: "tanpa-judul-5", code: "RC-005",
+      slug: "tanpa-judul-5", sample: true, code: "RC-005",
       title: { id: "Tanpa Judul V", en: "Untitled V" },
       artist: "nama-perupa", category: "lukisan",
       year: "2018",
@@ -304,7 +353,7 @@ window.SITE = {
               en: "A short note on the work: its subject, its technique, or how it came into the collection." }
     },
     {
-      slug: "tanpa-judul-6", code: "RC-006",
+      slug: "tanpa-judul-6", sample: true, code: "RC-006",
       title: { id: "Tanpa Judul VI", en: "Untitled VI" },
       artist: "nama-perupa", category: "lukisan",
       year: "2020",
@@ -315,7 +364,7 @@ window.SITE = {
               en: "A short note on the work: its subject, its technique, or how it came into the collection." }
     },
     {
-      slug: "tanpa-judul-7", code: "RC-007",
+      slug: "tanpa-judul-7", sample: true, code: "RC-007",
       title: { id: "Tanpa Judul VII", en: "Untitled VII" },
       artist: "nama-perupa", category: "lukisan",
       year: "2024",
@@ -326,7 +375,7 @@ window.SITE = {
               en: "A short note on the work: its subject, its technique, or how it came into the collection." }
     },
     {
-      slug: "tanpa-judul-8", code: "RC-008",
+      slug: "tanpa-judul-8", sample: true, code: "RC-008",
       title: { id: "Tanpa Judul VIII", en: "Untitled VIII" },
       artist: "nama-perupa", category: "patung",
       year: "2023",
@@ -337,7 +386,7 @@ window.SITE = {
               en: "A short note on the work: its subject, its technique, or how it came into the collection." }
     },
     {
-      slug: "tanpa-judul-9", code: "RC-009",
+      slug: "tanpa-judul-9", sample: true, code: "RC-009",
       title: { id: "Tanpa Judul IX", en: "Untitled IX" },
       artist: "nama-pematung", category: "patung",
       year: "2017",
@@ -348,7 +397,7 @@ window.SITE = {
               en: "A short note on the work: its subject, its technique, or how it came into the collection." }
     },
     {
-      slug: "tanpa-judul-10", code: "RC-010",
+      slug: "tanpa-judul-10", sample: true, code: "RC-010",
       title: { id: "Tanpa Judul X", en: "Untitled X" },
       artist: "nama-pematung", category: "patung",
       year: "2019",
@@ -359,7 +408,7 @@ window.SITE = {
               en: "A short note on the work: its subject, its technique, or how it came into the collection." }
     },
     {
-      slug: "tanpa-judul-11", code: "RC-011",
+      slug: "tanpa-judul-11", sample: true, code: "RC-011",
       title: { id: "Tanpa Judul XI", en: "Untitled XI" },
       artist: "nama-pematung", category: "patung",
       year: "2022",

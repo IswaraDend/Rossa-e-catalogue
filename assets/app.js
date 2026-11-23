@@ -17,14 +17,17 @@
   const S = window.SITE;
   const settings = S.settings || {};
   const collector = S.collector || {};
+  // Data contoh ditandai sample: true. Matikan lewat settings.showSamples = false sebelum tayang.
+  const showSamples = settings.showSamples !== false;
+  const keep = x => !!x && (showSamples || !x.sample);
   const OTHER = { id: '_lainnya', name: { id: 'Lainnya', en: 'Other' }, display: 'hang', room: 'stone' };
   const categories = (S.categories || []).filter(c => c && c.id);
   const catById = new Map(categories.map(c => [c.id, c]));
-  const artists = (S.artists || []).filter(a => a && a.slug);
+  const artists = (S.artists || []).filter(a => keep(a) && a.slug);
   const artistBySlug = new Map(artists.map(a => [a.slug, a]));
   const catOf = w => catById.get(w.category) || OTHER;
   const catRank = c => { const i = categories.indexOf(c); return i < 0 ? 9999 : i; };
-  const WORKS = (S.works || []).filter(w => w && w.slug)
+  const WORKS = (S.works || []).filter(w => keep(w) && w.slug)
     .map((w, i) => ({ w, i }))
     .sort((a, b) => (catRank(catOf(a.w)) - catRank(catOf(b.w))) || (a.i - b.i))
     .map(x => x.w);
@@ -42,7 +45,7 @@
       skip: 'Langsung ke konten', mainNav: 'Navigasi utama',
       nav: { home: 'Rossa', biography: 'Biografi', collection: 'Koleksi', artists: 'Seniman' },
       menu: 'Buka menu', close: 'Tutup menu', language: 'Bahasa', contact: 'Kontak',
-      aboutCollector: 'Tentang kolektor', enter: 'Masuki koleksi', readBio: 'Baca biografi',
+      aboutCollector: 'Tentang kolektor', enter: 'Lihat koleksi', readBio: 'Baca biografi',
       counts: (w, a) => w + ' karya dari ' + a + ' seniman',
       biography: 'Biografi', milestones: 'Tonggak perjalanan', collectionFact: 'Koleksi',
       walkCollection: 'Jelajahi koleksi', chapter: 'Koleksi',
@@ -51,23 +54,24 @@
       endTitle: 'Akhir koleksi', endArtist: 'Akhir karya seniman ini',
       backToFirst: 'Kembali ke karya pertama', viewIndex: 'Lihat indeks',
       walk: 'Jelajah', index: 'Indeks', viewLabel: 'Tampilan koleksi',
-      indexTitle: 'Indeks koleksi', filterLabel: 'Saring berdasarkan kategori', all: 'Semua',
+      indexTitle: 'Koleksi', filterLabel: 'Saring berdasarkan kategori', all: 'Semua karya',
       artistCount: n => n + ' seniman', artist: 'Seniman', born: 'Lahir', based: 'Berkarya di',
       worksInCollection: 'Karya dalam koleksi', noWorksArtist: 'Karya seniman ini belum dimasukkan ke katalog.',
       nextArtist: 'Seniman berikutnya', allArtists: 'Semua seniman',
       year: 'Tahun', medium: 'Medium', size: 'Ukuran', category: 'Kategori', status: 'Status', code: 'Kode inventaris',
-      back: 'Kembali', prev: 'Sebelumnya', next: 'Berikutnya', pagerLabel: 'Navigasi halaman',
+      back: 'Kembali ke koleksi', prev: 'Sebelumnya', next: 'Berikutnya', pagerLabel: 'Navigasi halaman',
       viewArtist: 'Lihat seniman', viewOnWall: 'Lihat di dinding koleksi',
       photoToFollow: 'Foto menyusul', enlarge: 'Perbesar foto', closeImage: 'Tutup foto',
       minimapLabel: 'Peta karya', goToWork: (n, title) => 'Ke karya ' + n + ', ' + title,
       walkLabel: 'Dinding koleksi', notFound: 'Halaman ini tidak ditemukan.', home: 'Kembali ke beranda',
-      noWorks: 'Belum ada karya di katalog.'
+      noWorks: 'Belum ada karya di katalog.',
+      collectorNote: 'Catatan kolektor', details: 'Foto detail', credit: 'Dokumentasi'
     },
     en: {
       skip: 'Skip to content', mainNav: 'Main navigation',
       nav: { home: 'Rossa', biography: 'Biography', collection: 'Collection', artists: 'Artists' },
       menu: 'Open menu', close: 'Close menu', language: 'Language', contact: 'Contact',
-      aboutCollector: 'About the collector', enter: 'Enter the collection', readBio: 'Read the biography',
+      aboutCollector: 'About the collector', enter: 'View the collection', readBio: 'Read the biography',
       counts: (w, a) => w + (w === 1 ? ' work' : ' works') + ' by ' + a + (a === 1 ? ' artist' : ' artists'),
       biography: 'Biography', milestones: 'Milestones', collectionFact: 'Collection',
       walkCollection: 'Walk the collection', chapter: 'Collection',
@@ -76,17 +80,18 @@
       endTitle: 'End of the collection', endArtist: "End of this artist's works",
       backToFirst: 'Back to the first work', viewIndex: 'See the index',
       walk: 'Walk', index: 'Index', viewLabel: 'Collection view',
-      indexTitle: 'Collection index', filterLabel: 'Filter by category', all: 'All',
+      indexTitle: 'Collection', filterLabel: 'Filter by category', all: 'All works',
       artistCount: n => n + (n === 1 ? ' artist' : ' artists'), artist: 'Artist', born: 'Born', based: 'Based in',
       worksInCollection: 'Works in the collection', noWorksArtist: "This artist's works have not been added yet.",
       nextArtist: 'Next artist', allArtists: 'All artists',
       year: 'Year', medium: 'Medium', size: 'Dimensions', category: 'Category', status: 'Status', code: 'Inventory no.',
-      back: 'Back', prev: 'Previous', next: 'Next', pagerLabel: 'Page navigation',
+      back: 'Back to the collection', prev: 'Previous', next: 'Next', pagerLabel: 'Page navigation',
       viewArtist: 'View the artist', viewOnWall: 'See it on the wall',
       photoToFollow: 'Photo to follow', enlarge: 'Enlarge photo', closeImage: 'Close photo',
       minimapLabel: 'Map of works', goToWork: (n, title) => 'Go to work ' + n + ', ' + title,
       walkLabel: 'Collection wall', notFound: 'This page could not be found.', home: 'Back to home',
-      noWorks: 'No works have been added yet.'
+      noWorks: 'No works have been added yet.',
+      collectorNote: "Collector's note", details: 'Detail photos', credit: 'Photography'
     }
   };
   const LANGS = (Array.isArray(settings.languages) && settings.languages.length ? settings.languages : ['id']).filter(l => UI[l]);
@@ -137,6 +142,26 @@
     if (s.diameter) return 'Ø' + NB + num(s.diameter) + NB + unit;
     const parts = [s.h, s.w, s.d].filter(x => x !== undefined && x !== null && x !== '');
     return parts.length ? parts.map(num).join(NB + '×' + NB) + NB + unit : '';
+  }
+  // Tautan dari content.js: { label, href }. Hanya http(s).
+  function linkHTML(l) {
+    if (!l || !t(l.label)) return '';
+    const href = String(l.href || '');
+    return /^https?:\/\//.test(href) ? '<a class="link-u" href="' + esc(href) + '" target="_blank" rel="noopener">' + tx(l.label) + '</a>' : tx(l.label);
+  }
+  function creditHTML(c) {
+    if (!c) return '';
+    const lead = [rich(c.text), linkHTML(c.source)].filter(Boolean).join(' ');
+    const parts = [lead, linkHTML(c.license)].filter(Boolean).join(', ');
+    return parts ? parts + '.' + (t(c.note) ? ' ' + rich(c.note) : '') : '';
+  }
+  function photoHTML(ph, cls) {
+    if (!ph || !ph.src) return '';
+    const cap = creditHTML(ph.credit);
+    return '<figure class="' + cls + '"><img src="' + esc(ph.src) + '"' +
+      (ph.width ? ' width="' + Number(ph.width) + '" height="' + Number(ph.height) + '"' : '') +
+      ' alt="' + tx(ph.alt) + '" loading="lazy" decoding="async">' +
+      (cap ? '<figcaption>' + cap + '</figcaption>' : '') + '</figure>';
   }
   const lowerRest = list => list.map((s, i) => (i ? s.charAt(0).toLowerCase() + s.slice(1) : s)).join(', ');
 
@@ -756,22 +781,39 @@
       '<article class="page bio">' +
         '<header class="bio-head"><div>' +
           '<span class="label">' + tx(L().biography) + '</span>' +
-          '<h1 class="bio-title">' + tx(collector.name) + '</h1>' +
+          '<h1 class="bio-title' + (collector.bioTitle ? ' long' : '') + '">' + rich(collector.bioTitle || collector.name) + '</h1>' +
           (collector.fullName ? '<p class="bio-full">' + tx(collector.fullName) + '</p>' : '') +
           (collector.statement ? '<p class="bio-statement">' + rich(collector.statement) + '</p>' : '') +
         '</div>' +
-        (collector.portrait ? '<figure class="portrait"><img src="' + esc(collector.portrait) + '" alt="' + tx(collector.portraitAlt) + '"></figure>' : '') +
+        (collector.bioPortrait && collector.bioPortrait.src ? photoHTML(collector.bioPortrait, 'collector-portrait')
+          : collector.portrait ? '<figure class="portrait"><img src="' + esc(collector.portrait) + '" alt="' + tx(collector.portraitAlt) + '"></figure>' : '') +
         '</header>' +
         '<div class="bio-body">' +
           (facts.length ? '<dl class="facts">' + facts.map(f => '<div><dt>' + esc(f[0]) + '</dt><dd>' + esc(f[1]) + '</dd></div>').join('') + '</dl>' : '<div></div>') +
-          '<div class="prose">' + (collector.biography || []).map(p => '<p>' + rich(p) + '</p>').join('') + '</div>' +
+          '<div class="prose">' + (collector.biography || []).map(p => '<p>' + rich(p) + '</p>').join('') +
+            storyHTML(collector.story) + coverageHTML(collector.coverage) + '</div>' +
         '</div>' +
-        (ms.length ? '<section class="milestones"><span class="label">' + tx(L().milestones) + '</span><ol class="ms-list">' +
+        (ms.length ? '<section class="milestones"><span class="label">' + tx(L().milestones) + '</span>' +
+          '<div class="ms-wrap"><ol class="ms-list">' +
           ms.map(m => '<li><span class="ms-year">' + tx(m.year) + '</span><span class="ms-text">' + rich(m.text) + '</span></li>').join('') +
-          '</ol></section>' : '') +
+          '</ol>' + photoHTML(collector.stagePhoto, 'stage-photo') + '</div></section>' : '') +
         '<div class="page-end"><a class="btn-pill" href="#/collection" data-fresh>' + tx(L().walkCollection) + ICON.right + '</a></div>' +
       '</article>';
     return t(L().biography);
+  }
+
+  // Cerita kolektor: hanya tampil setelah Rossa menyampaikannya sendiri.
+  function storyHTML(st) {
+    if (!st || !(st.paragraphs || []).some(p => t(p))) return '';
+    const w = st.work ? workBySlug.get(st.work) : null;
+    return '<section class="collector-story">' + (t(st.title) ? '<h2>' + rich(st.title) + '</h2>' : '') +
+      st.paragraphs.filter(p => t(p)).map(p => '<p>' + rich(p) + '</p>').join('') +
+      (w ? '<p><a class="link-u" href="#/works/' + enc(w.slug) + '" data-fresh>' + rich(w.title) + '</a></p>' : '') + '</section>';
+  }
+  function coverageHTML(cv) {
+    if (!cv || !cv.link || !cv.link.href) return '';
+    return '<section class="coverage">' + (t(cv.title) ? '<span class="label">' + tx(cv.title) + '</span>' : '') +
+      (t(cv.text) ? '<p>' + rich(cv.text) + '</p>' : '') + '<p>' + linkHTML(cv.link) + '</p></section>';
   }
 
   function viewToggle(active) {
@@ -806,12 +848,13 @@
     const inner = w.image
       ? '<img src="' + esc(w.image) + '" alt="' + esc(altOf(w)) + '" loading="lazy" decoding="async" data-slug="' + esc(w.slug) + '">'
       : '<span class="ph" style="--tone:' + toneOf(w) + '"></span>';
-    const meta = [t(w.year), t(w.medium)].filter(Boolean).join(', ');
+    const meta = t(w.year);
     return '<a class="card" href="#/works/' + enc(w.slug) + '" data-fresh>' +
       '<span class="card-plate"><span class="' + cls.join(' ') + '" style="--r:' + d.ratio.toFixed(4) + ';--shape:' + shapeOf(d.ratio) + '"' +
       (w.image ? '' : ' role="img" aria-label="' + esc(altOf(w)) + '"') + '>' + inner + '</span></span>' +
-      '<span class="card-meta"><span class="n">' + pad(i + 1) + '</span><span class="t">' + rich(w.title) + '</span>' +
-      (a ? '<span class="a">' + tx(a.name) + '</span>' : '') + (meta ? '<span class="m">' + esc(meta) + '</span>' : '') + '</span></a>';
+      '<span class="card-meta"><span class="n">' + pad(i + 1) + '</span>' +
+      (a ? '<span class="a">' + tx(a.name) + '</span>' : '') + '<span class="t">' + rich(w.title) + '</span>' +
+      (meta ? '<span class="m">' + esc(meta) + '</span>' : '') + '</span></a>';
   }
 
   function renderIndex(route) {
@@ -926,7 +969,11 @@
           '<h1 class="work-title">' + rich(w.title) + '</h1>' +
           (a ? '<p class="work-artist"><a class="link-u" href="#/artists/' + enc(a.slug) + '" data-fresh>' + tx(a.name) + '</a></p>' : '') +
           '<dl class="work-dl">' + rows.map(r => '<div><dt>' + esc(r[0]) + '</dt><dd>' + r[1] + '</dd></div>').join('') + '</dl>' +
-          (w.note ? '<p class="work-note">' + rich(w.note) + '</p>' : '') +
+          (t(w.note) ? '<p class="work-note">' + rich(w.note) + '</p>' : '') +
+          (t(w.collectorNote) ? '<div class="work-cnote"><span class="label">' + tx(L().collectorNote) + '</span><p>' + rich(w.collectorNote) + '</p></div>' : '') +
+          ((w.details || []).some(d => d && d.src) ? '<div class="work-details"><span class="label">' + tx(L().details) + '</span><div class="wd-row">' +
+            w.details.filter(d => d && d.src).map(d => '<a href="' + esc(d.src) + '" target="_blank" rel="noopener"><img src="' + esc(d.src) + '" alt="' + tx(d.alt) + '" loading="lazy"></a>').join('') + '</div></div>' : '') +
+          (t(w.credit) ? '<p class="work-credit">' + tx(L().credit) + ': ' + rich(w.credit) + '</p>' : '') +
           '<div class="work-more">' +
             '<a class="link-u" href="#/collection/' + enc(w.slug) + '" data-fresh>' + tx(L().viewOnWall) + '</a>' +
             (a ? '<a class="link-u" href="#/artists/' + enc(a.slug) + '" data-fresh>' + tx(L().viewArtist) + '</a>' : '') +

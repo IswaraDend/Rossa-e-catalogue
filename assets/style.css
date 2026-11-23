@@ -498,3 +498,29 @@ main.enter{animation:pageIn .5s var(--ease) both}
 @media (prefers-reduced-motion:reduce){
   *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}
 }
+
+/* ---------- Tambahan brief: potret bio, liputan, cerita kolektor, foto panggung, detail karya ---------- */
+.bio-title.long{font-size:clamp(64px,7.6vw,124px);line-height:.9}
+.bio-title.long em{display:block;font-style:italic}
+.collector-portrait{margin:0;max-width:430px;width:min(430px,34vw);justify-self:end;align-self:end}
+.collector-portrait img{display:block;width:100%;height:auto;aspect-ratio:4/5;object-fit:cover;object-position:50% 18%;filter:grayscale(1) contrast(.96)}
+.collector-portrait figcaption,.stage-photo figcaption{margin-top:.65rem;font-size:.8rem;line-height:1.5;color:var(--muted)}
+.collector-portrait figcaption .link-u,.stage-photo figcaption .link-u{font-size:inherit}
+.prose .collector-story,.prose .coverage{margin-top:48px;padding-top:24px;border-top:1px solid var(--line);max-width:62ch}
+.collector-story h2{font-weight:400;font-style:italic;font-size:clamp(26px,2.2vw,34px);line-height:1.15;margin:0 0 14px}
+.coverage .label{display:block;margin-bottom:12px}
+.ms-wrap{display:grid;grid-template-columns:minmax(0,980px);gap:clamp(32px,5vw,80px);align-items:start}
+.ms-wrap:has(.stage-photo){grid-template-columns:minmax(0,1fr) minmax(220px,380px)}
+.stage-photo{margin:26px 0 0}
+.stage-photo img{display:block;width:100%;height:auto}
+.work-cnote{margin-top:26px;max-width:46ch}
+.work-cnote p{margin:8px 0 0;font-size:19px;line-height:1.6}
+.work-details{margin-top:26px}
+.wd-row{display:flex;flex-wrap:wrap;gap:10px;margin-top:10px}
+.wd-row img{display:block;width:84px;height:84px;object-fit:cover}
+.work-credit{margin-top:22px;font-size:14px;color:var(--muted)}
+@media (max-width:899px){
+  .collector-portrait{justify-self:start;width:100%;margin-top:34px}
+  .ms-wrap,.ms-wrap:has(.stage-photo){grid-template-columns:minmax(0,1fr)}
+  .stage-photo{max-width:430px}
+}
