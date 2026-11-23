@@ -348,6 +348,10 @@
       this.workItems = items.filter(it => it.kind === 'work');
       this.workItems.forEach((it, n) => { it.n = n; });
       this.active = -1; this.room = null; this.raf = 0; this.p = 0; this.bars = null;
+      // Gerak: posisi tampil (vis) mengejar posisi scroll (p) dengan inersia,
+      // lukisan berayun di kawatnya mengikuti kecepatan, lalu tenang kembali.
+      this.vis = null; this.vel = 0; this.ang = 0; this.angV = 0; this.anim = 0; this.last = 0;
+      this.tick = now => this.step(now);
       this.assignRooms();
       this.section = document.createElement('section');
       this.section.className = 'walk';
@@ -398,6 +402,7 @@
       window.removeEventListener('wheel', this.onWheel);
       document.removeEventListener('keydown', this.onKey);
       if (this.raf) cancelAnimationFrame(this.raf);
+      if (this.anim) cancelAnimationFrame(this.anim);
     }
     assignRooms() {
       const items = this.items;
@@ -555,6 +560,7 @@
         else { left = 0; itemW = w + 28 + capW + gap; }
         const top = Math.round(base - h);
         setBox(art, left, top, w, h);
+        art.style.transformOrigin = Math.round(w / 2) + 'px ' + (-top) + 'px';
         art.classList.toggle('small', w < 120 || h < 110);
         const wires = el.querySelectorAll('.wire');
         if (wires.length === 2) {
@@ -601,7 +607,8 @@
       const r = this.section.getBoundingClientRect();
       const p = clamp(-r.top, 0, this.maxX);
       this.p = p;
-      this.track.style.transform = 'translate3d(' + (-p) + 'px,0,0)';
+      if (force || this.vis === null || reduced()) { this.vis = p; this.vel = 0; this.paint(); }
+      else this.kick();
       const engaged = r.top <= M.vh * 0.3;
       if (engaged !== this.engaged || force) { this.engaged = engaged; dock.classList.toggle('walk-off', !engaged); }
       const fx = p + this.focusX();
@@ -616,6 +623,50 @@
         room = it.room;
       }
       if (room !== this.room || force) { this.room = room; setRoom(room); }
+    }
+    kick() {
+      if (this.anim) return;
+      this.last = performance.now();
+      this.anim = requestAnimationFrame(this.tick);
+    }
+    step(now) {
+      this.anim = 0;
+      const dt = Math.min(0.05, Math.max(0.001, (now - this.last) / 1000));
+      this.last = now;
+      const prev = this.vis;
+      this.vis += (this.p - this.vis) * (1 - Math.exp(-dt / 0.12));
+      if (Math.abs(this.p - this.vis) < 0.3) this.vis = this.p;
+      this.vel = (this.vis - prev) / dt;
+      // pegas teredam: bagian bawah lukisan tertinggal saat dinding bergeser
+      const goal = clamp(-this.vel * 0.0006, -1.4, 1.4);
+      this.angV += (-70 * (this.ang - goal) - 6.5 * this.angV) * dt;
+      this.ang += this.angV * dt;
+      const moving = this.vis !== this.p || Math.abs(this.ang) > 0.004 || Math.abs(this.angV) > 0.004;
+      if (!moving) { this.ang = 0; this.angV = 0; this.vel = 0; }
+      this.paint();
+      if (moving) this.anim = requestAnimationFrame(this.tick);
+    }
+    paint() {
+      const M = this.M, vis = this.vis;
+      if (!M || vis === null) return;
+      this.track.style.transform = 'translate3d(' + (-vis).toFixed(2) + 'px,0,0)';
+      this.track.style.setProperty('--swing', this.ang.toFixed(3) + 'deg');
+      const still = reduced();
+      const fx = vis + this.focusX(), reach = M.mobile ? M.vw * 0.62 : M.mainW * 0.55;
+      const lead = this.items[0] ? this.items[0].width : 0;
+      this.items.forEach(it => {
+        if (it.x + it.width < vis - M.vw * 0.5 || it.x > vis + M.vw * 1.5) return;
+        if (it.kind === 'work') {
+          const d = Math.abs(it.x + it.center - fx) / reach;
+          const e = clamp((d - 0.22) / 0.78, 0, 1);
+          const f = (1 - e * e * (3 - 2 * e)).toFixed(3);
+          if (it.f !== f) { it.f = f; it.el.style.setProperty('--f', f); }
+        } else if (it.kind === 'intro' || it.kind === 'end') {
+          const rest = Math.max(0, it.x - lead);
+          const px = still ? 0 : clamp((vis - rest) * 0.22, -M.vw * 0.3, M.vw * 0.3);
+          it.el.style.setProperty('--px', px.toFixed(1) + 'px');
+        }
+      });
     }
     scrollToP(p, smooth) {
       const top = this.section.getBoundingClientRect().top + window.scrollY + p;
