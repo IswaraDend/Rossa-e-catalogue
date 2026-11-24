@@ -445,6 +445,8 @@ main{margin-left:var(--side-w);min-height:100vh}
 
 /* ---------- Transisi halaman ---------- */
 main.enter{animation:pageIn .5s var(--ease) both}
+main.land{animation:landIn 1.35s cubic-bezier(.16,1,.3,1) both;transform-origin:50% 45%}
+@keyframes landIn{from{opacity:0;transform:scale(1.035)}to{opacity:1;transform:none}}
 @keyframes pageIn{from{opacity:0}to{opacity:1}}
 main.in-next{animation:slideInNext .75s var(--ease) both}
 main.in-prev{animation:slideInPrev .75s var(--ease) both}
@@ -644,21 +646,8 @@ body.one-screen .home{min-height:0;height:100%}
 @keyframes settleIn{from{opacity:0;translate:0 14px}to{opacity:1;translate:0 0}}
 
 /* beranda */
-.home-title .l1{animation:riseIn 1s var(--ease) .05s both}
-.home-title .l2{animation:riseIn 1s var(--ease) .2s both}
-/* SplitText (app.js: splitHomeTitle). Judul disembunyikan sampai huruf siap dipecah;
-   masker baris diberi ruang lebih agar ekor huruf dan miring italic tidak terpotong. */
-.home-title.is-split{visibility:hidden}
-.home-title.is-split .l1,.home-title.is-split .l2{animation:none;display:flow-root}
-.home-title .ht-line-mask{display:block;width:max-content;padding:.14em .12em .2em 0;margin:-.14em -.12em -.2em 0}
-.home-title .ht-line{display:block}
-.home-title .ht-char{display:inline-block;vertical-align:top;will-change:transform}
-.home-sub{animation:fadeIn .9s var(--ease) .45s both}
-.home-about{animation:riseIn .9s var(--ease) .55s both}
-.home-cta{animation:riseIn .9s var(--ease) .68s both}
-.home-count{animation:fadeIn .9s var(--ease) .85s both}
-.home .portrait img{animation:unveil 1.4s cubic-bezier(.65,0,.35,1) .15s both}
-.home .portrait::before{animation:fadeIn 1s var(--ease) 1.1s both}
+/* Beranda tidak punya animasi per bagian. Saat situs pertama dibuka, seluruh
+   halaman "mendarat" (main.land, di bawah) meneruskan gerak zoom pembuka. */
 
 /* biografi */
 .bio-head > div > *{animation:riseIn .9s var(--ease) both}
