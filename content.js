@@ -40,7 +40,7 @@ window.SITE = {
 
 
   /* -------------------------------------------------------------------
-     2. KOLEKTOR (Beranda dan halaman Biografi)
+     2. KOLEKTOR (halaman Rossa: pembuka dan profil kolektor)
      ------------------------------------------------------------------- */
   collector: {
     name: "Rossa",
@@ -58,47 +58,36 @@ window.SITE = {
       en: "Paintings and sculpture from Rossa's private collection."
     },
 
-    // Judul halaman Biografi. Bagian di antara bintang tampil miring di baris kedua.
+    // Profil kolektor: tampil di halaman Rossa, di bawah bagian pembuka.
+    // Fokusnya Rossa sebagai kolektor seni, bukan karier musiknya.
+    // Judul profil. Bagian di antara bintang tampil miring di baris kedua.
     bioTitle: { id: "Rossa, *sang kolektor*", en: "Rossa, *the collector*" },
 
-    // Potret di halaman Biografi: panel kecil di sebelah teks, crop 4:5, monokrom.
-    // Still wawancara Medcom ID, 19 Mei 2023 (file sumber 541 × 768 px).
-    bioPortrait: {
-      src: "https://upload.wikimedia.org/wikipedia/commons/5/50/Rossa_at_Ngobras_Special_Medcom_ID.png",
-      width: 541, height: 768,
-      alt: { id: "Rossa tertawa sambil memegang mikrofon dalam wawancara Medcom ID.",
-             en: "Rossa laughing as she holds a microphone during a Medcom ID interview." },
-      credit: {
-        text: { id: "Rossa dalam wawancara, 2023. Still oleh", en: "Rossa in an interview, 2023. Still by" },
-        source: { label: "Medcom ID", href: "https://commons.wikimedia.org/wiki/File:Rossa_at_Ngobras_Special_Medcom_ID.png" },
-        license: { label: "CC BY 3.0", href: "https://creativecommons.org/licenses/by/3.0/" },
-        note: { id: "Crop dan konversi monokrom untuk katalog.", en: "Cropped and converted to monochrome for the catalogue." }
-      }
-    },
-
-    // Kalimat besar di halaman Biografi
+    // Kalimat besar di bawah judul profil
     statement: {
       id: "Lukisan, patung, dan apa pun yang datang berikutnya.",
       en: "Painting, sculpture, and whatever comes next."
     },
 
-    // Paragraf biografi, tampil berurutan. Paragraf 1 dan 2 dari copy website.
+    // Paragraf profil, tampil berurutan.
     biography: [
+      // [CEK] berdasarkan liputan ELLE Indonesia, 2022
       {
         id: "Di rumah Rossa, lukisan berukuran besar mendapat tempat di ruang yang diterangi cahaya jendela. Saat berbincang dengan ELLE Indonesia pada 2022, ia bercerita tentang perubahan seleranya dalam menata rumah. Ia mulai menghadirkan karya kontemporer dengan warna yang lebih berani. Baginya, melihat karya-karya itu di rumah membawa kegembiraan tersendiri.",
-        // [CEK] terjemahan Inggris
         en: "In Rossa's home, large paintings are given space in rooms lit by the windows. Speaking with ELLE Indonesia in 2022, she described how her taste in furnishing her home had changed. She began bringing in contemporary works in bolder colours. For her, seeing those works at home brings a joy of its own."
       },
       {
-        id: "Publik mengenal Rossa lewat lagu seperti *Tegar*, ciptaan Melly Goeslaw yang ia bawakan pada 1999. Di katalog ini, ia hadir sebagai kolektor. Melalui pilihan lukisan dan patung dari koleksi pribadinya, pengunjung diajak melihat karya-karya yang selama ini ia nikmati dari dekat.",
-        // [CEK] terjemahan Inggris
-        en: "The public knows Rossa through songs such as *Tegar*, written by Melly Goeslaw and recorded by her in 1999. In this catalogue she appears as a collector. Through a selection of paintings and sculptures from her private collection, visitors are invited to see up close the works she has long enjoyed."
+        id: "Katalog ini menghadirkan Rossa sebagai kolektor. Lewat pilihan lukisan dan patung dari koleksi pribadinya, pengunjung diajak melihat dari dekat karya-karya yang selama ini ia nikmati di rumah, beserta para seniman di baliknya.",
+        en: "This catalogue presents Rossa as a collector. Through a selection of paintings and sculptures from her private collection, visitors are invited to see up close the works she has long enjoyed at home, and the artists behind them."
       },
       // [CEK] Komisi TEGAR.
       {
-        id: "Rossa juga mengoleksi lewat komisi. *TEGAR*, patung yang berangkat dari lagunya tahun 1999, saat ini sedang diciptakan untuknya oleh Aditya Sena Hadikusumo.",
-        en: "Rossa also collects through commission. *TEGAR*, a sculpture drawn from her 1999 song, is currently being created for her by Aditya Sena Hadikusumo."
+        id: "Rossa juga mengoleksi lewat komisi. *TEGAR*, patung karya Aditya Sena Hadikusumo, saat ini sedang diciptakan khusus untuk koleksinya.",
+        en: "Rossa also collects through commission. *TEGAR*, a sculpture by Aditya Sena Hadikusumo, is currently being created especially for her collection."
       }
+      // [DUMMY] Paragraf tambahan, isi setelah ada keterangan dari Rossa, misalnya
+      // sejak kapan mulai mengoleksi atau apa yang ia cari dari sebuah karya:
+      // , { id: "Teks Indonesia.", en: "English text." }
     ],
 
     // Cerita akuisisi pertama atau alasan memilih satu karya.
@@ -110,7 +99,7 @@ window.SITE = {
       work: ""
     },
 
-    // Label liputan, tampil di bawah biografi.
+    // Label liputan, tampil di bawah paragraf profil.
     coverage: {
       title: { id: "Di rumah Rossa", en: "At Rossa's home" },
       text: { id: "Dalam episode *My Home My Style*, Rossa memperlihatkan sejumlah karya favorit di kediamannya.",
@@ -119,40 +108,28 @@ window.SITE = {
               href: "https://elle.co.id/elle-tv/rossa-unjuk-koleksi-seni-yang-menghidupkan-karakter-rumahnya-my-home-my-style" }
     },
 
-    // Kolom data singkat di halaman Biografi. Baris "Koleksi" dibuat otomatis dari daftar kategori.
+    // Kolom data singkat di samping paragraf profil. Baris "Koleksi" dibuat otomatis dari daftar kategori.
     facts: [
-      { label: { id: "Lahir", en: "Born" },
-        value: { id: "Sumedang, Jawa Barat, 9 Oktober 1978", en: "Sumedang, West Java, 9 October 1978" } },
-      { label: { id: "Dikenal sebagai", en: "Known as" },
-        value: { id: "Rossa, Teh Oca; di Malaysia, Dato' Sri Rossa", en: "Rossa, Teh Oca; in Malaysia, Dato' Sri Rossa" } },
-      { label: { id: "Pendidikan", en: "Education" },
-        value: { id: "FISIP Universitas Indonesia, lulus 2002", en: "Faculty of Social and Political Sciences, Universitas Indonesia, 2002" } }
+      // [CEK]
+      { label: { id: "Minat", en: "Interest" },
+        value: { id: "Seni rupa kontemporer dengan warna yang berani", en: "Contemporary art in bold colours" } },
+      // [CEK]
+      { label: { id: "Cara mengoleksi", en: "How she collects" },
+        value: { id: "Akuisisi dan komisi karya", en: "Acquisition and commission" } },
+      // [CEK]
+      { label: { id: "Karya komisi", en: "Commission" },
+        value: { id: "TEGAR, oleh Aditya Sena Hadikusumo (dalam proses)", en: "TEGAR, by Aditya Sena Hadikusumo (in progress)" } }
       // [DUMMY] contoh baris tambahan:
-      // { label: { id: "Mulai mengoleksi", en: "Collecting since" }, value: "20XX" },
+      // , { label: { id: "Mulai mengoleksi", en: "Collecting since" }, value: "20XX" }
     ],
 
-    // Foto arsip karier di samping tonggak perjalanan. Berwarna, rasio asli.
-    stagePhoto: {
-      src: "https://upload.wikimedia.org/wikipedia/commons/1/14/ROSSA_THE_JOURNEY_OF_21_DAZZLING_YEARS_%282017%29.jpg",
-      width: 1291, height: 1614,
-      alt: { id: "Rossa di atas panggung konser The Journey of 21 Dazzling Years, 2017.",
-             en: "Rossa on stage at The Journey of 21 Dazzling Years concert, 2017." },
-      credit: {
-        text: { id: "Konser *The Journey of 21 Dazzling Years*, 2017. Foto:", en: "*The Journey of 21 Dazzling Years* concert, 2017. Photo:" },
-        source: { label: "Nash Rassudin", href: "https://commons.wikimedia.org/wiki/File:ROSSA_THE_JOURNEY_OF_21_DAZZLING_YEARS_(2017).jpg" },
-        license: { label: "CC BY-SA 4.0", href: "https://creativecommons.org/licenses/by-sa/4.0/" }
-      }
-    },
-
-    // Tonggak perjalanan. [CEK] semua tahun berdasarkan sumber publik.
+    // Perjalanan koleksi. Hanya tonggak yang berkaitan dengan koleksi seni.
     milestones: [
-      { year: "1988", text: { id: "Album pertama, *Gadis Ingusan*.", en: "First album, *Gadis Ingusan*." } },
-      { year: "1996", text: { id: "*Nada-Nada Cinta* melambungkan namanya.", en: "*Nada-Nada Cinta* brings her to national attention." } },
-      { year: "1999", text: { id: "Album *Tegar*, bersertifikat multi-platinum.", en: "The album *Tegar*, certified multi-platinum." } },
-      { year: "2002", text: { id: "Lulus dari FISIP Universitas Indonesia.", en: "Graduates from Universitas Indonesia." } },
-      { year: "2010", text: { id: "Konser *Melodi Cinta* di Stadium Putra Bukit Jalil, Malaysia, di hadapan lebih dari 12.000 penonton.", en: "*Melodi Cinta* concert at Stadium Putra Bukit Jalil, Malaysia, for more than 12,000 people." } },
-      { year: "2023", text: { id: "Album *Another Journey: The Beginning*.", en: "Releases *Another Journey: The Beginning*." } },
+      // [CEK]
+      { year: "2022", text: { id: "Memperlihatkan koleksi seni di rumahnya dalam liputan *My Home My Style* ELLE Indonesia.", en: "Shows the art collection in her home in ELLE Indonesia's *My Home My Style*." } },
       { year: { id: "Kini", en: "Now" }, text: { id: "Patung komisi *TEGAR* dalam proses penciptaan bersama Aditya Sena Hadikusumo.", en: "The commissioned sculpture *TEGAR* is in progress with Aditya Sena Hadikusumo." } }
+      // [DUMMY] contoh tonggak tambahan, isi setelah dikonfirmasi tim Rossa:
+      // , { year: "20XX", text: { id: "Karya pertama masuk koleksi.", en: "First work enters the collection." } }
     ]
   },
 

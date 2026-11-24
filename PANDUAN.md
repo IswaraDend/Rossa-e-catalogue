@@ -7,7 +7,7 @@ Versi: Draft v1
 ```
 rossa-collection/
   index.html        halaman utama, buka file ini untuk melihat situs
-  content.js        SEMUA teks dan data: biografi, seniman, karya, kategori
+  content.js        SEMUA teks dan data: profil kolektor, seniman, karya, kategori
   images/
     rossa/          foto Rossa
     works/          foto karya
@@ -26,8 +26,8 @@ Alamat halaman:
 
 | Halaman | Alamat |
 |---|---|
-| Beranda | `index.html#/` |
-| Biografi | `index.html#/biography` |
+| Rossa (pembuka + profil kolektor) | `index.html#/` |
+| Langsung ke profil kolektor | `index.html#/biography` (alamat lama, tetap berlaku) |
 | Koleksi (jelajah dinding) | `index.html#/collection` |
 | Indeks koleksi (grid) | `index.html#/index` |
 | Daftar seniman | `index.html#/artists` |
@@ -108,19 +108,19 @@ Di bagian 1 `content.js`:
 Ditandai di `content.js`:
 
 - **[DUMMY]**: isi contoh, wajib diganti data asli.
-  - Paragraf ke-3 biografi (sisi Rossa sebagai kolektor)
+  - Ruang paragraf, data, dan tonggak tambahan di profil kolektor (masih berupa catatan, belum tampil)
   - Pengantar bab Lukisan dan Patung
   - Seniman "Nama Pelukis", "Nama Perupa", "Nama Pematung" beserta biografinya
   - Karya "Tanpa Judul I" sampai "Tanpa Judul XI" beserta tahun, medium, ukuran, dan kode inventaris
 - **[CEK]**: sudah berdasarkan sumber atau data proyek, tetap perlu konfirmasi tim Rossa.
-  - Paragraf 1, 2, dan 4 biografi, kolom data, dan tonggak perjalanan (sumber publik, lihat bagian 8)
+  - Paragraf profil kolektor, kolom data (Minat, Cara mengoleksi, Karya komisi), dan perjalanan koleksi (sumber: liputan ELLE Indonesia 2022 dan data proyek)
   - Biografi Aditya Sena Hadikusumo dan entri TEGAR (ukuran, material, dan tahun dikosongkan karena belum final)
 
 ## 6a. Tambahan dari brief (Draft v1 + brief)
 
 - **Karya contoh**: semua karya dan seniman [DUMMY] kini bertanda `sample: true`. Selama `settings.showSamples: true`, contoh tetap tampil untuk melihat tata letak. **Ubah ke `false` sebelum tayang**; halaman publik tidak boleh memuat karya contoh.
 - **Entri riset berstatus draf** (Sekar Puti, *It’s About Time*) disimpan di `research/drafts.json`, di luar data publik. Situs tidak memuat file itu.
-- **Halaman Biografi**: judul "Rossa, sang kolektor" (`bioTitle`), biografi dari copy website, potret Medcom ID 4:5 monokrom (`bioPortrait`), label liputan ELLE (`coverage`), dan foto konser 2017 di samping tonggak perjalanan (`stagePhoto`). Kedua foto diambil dari Wikimedia Commons beserta kredit dan lisensinya.
+- **Profil kolektor** (dulu halaman Biografi): kini satu halaman dengan Rossa, tampil di bawah bagian pembuka. Isinya hanya tentang Rossa sebagai kolektor seni, tanpa karier musik: judul "Rossa, sang kolektor" (`bioTitle`), paragraf profil (`biography`), kolom data (`facts`), label liputan ELLE (`coverage`), dan perjalanan koleksi (`milestones`). Potret wawancara dan foto konser tidak dipakai lagi. Tautan "Tentang Rossa" di bagian pembuka menggulir ke profil ini.
 - **Cerita kolektor** (`collector.story`): ruang untuk cerita akuisisi pertama atau alasan memilih satu karya. Isi hanya setelah Rossa menyampaikannya sendiri; selama kosong, bagian ini tidak tampil.
 - **Field karya baru**: `collectorNote` (catatan kolektor), `details` (foto detail), `credit` (kredit dokumentasi). Semua opsional dan disembunyikan bila kosong.
 - Foto utama beranda masih potret `images/rossa/rossa-portrait.jpg`. Pastikan sumber dan izin publikasinya sebelum tayang. Foto pemotretan ELLE (Gavriela Go, Desember 2022) hanya dipakai bila ada master dan izin dari pemegang hak.
@@ -137,7 +137,14 @@ https://domain-situs.com/#/works/tegar
 
 Alamat inilah yang dipakai untuk QR atau barcode di label karya. Karena itu `slug` karya jangan diubah setelah label dicetak.
 
-## 8. Sumber data biografi
+## 8. Sumber data profil
+
+Sumber profil kolektor:
+
+- ELLE Indonesia, *My Home My Style*: https://elle.co.id/elle-tv/rossa-unjuk-koleksi-seni-yang-menghidupkan-karakter-rumahnya-my-home-my-style
+
+Sumber data umum Rossa (dipakai di versi sebelumnya, kini tidak tampil di situs):
+
 
 - Wikipedia, Rossa (singer): https://en.wikipedia.org/wiki/Rossa_(singer)
 - rossaofficial.com, About Rossa: https://rossaofficial.com/?p=1253

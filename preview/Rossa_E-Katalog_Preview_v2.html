@@ -654,7 +654,7 @@ window.SITE = {
 
 
   /* -------------------------------------------------------------------
-     2. KOLEKTOR (Beranda dan halaman Biografi)
+     2. KOLEKTOR (halaman Rossa: pembuka dan profil kolektor)
      ------------------------------------------------------------------- */
   collector: {
     name: "Rossa",
@@ -672,47 +672,36 @@ window.SITE = {
       en: "Paintings and sculpture from Rossa's private collection."
     },
 
-    // Judul halaman Biografi. Bagian di antara bintang tampil miring di baris kedua.
+    // Profil kolektor: tampil di halaman Rossa, di bawah bagian pembuka.
+    // Fokusnya Rossa sebagai kolektor seni, bukan karier musiknya.
+    // Judul profil. Bagian di antara bintang tampil miring di baris kedua.
     bioTitle: { id: "Rossa, *sang kolektor*", en: "Rossa, *the collector*" },
 
-    // Potret di halaman Biografi: panel kecil di sebelah teks, crop 4:5, monokrom.
-    // Still wawancara Medcom ID, 19 Mei 2023 (file sumber 541 × 768 px).
-    bioPortrait: {
-      src: "https://upload.wikimedia.org/wikipedia/commons/5/50/Rossa_at_Ngobras_Special_Medcom_ID.png",
-      width: 541, height: 768,
-      alt: { id: "Rossa tertawa sambil memegang mikrofon dalam wawancara Medcom ID.",
-             en: "Rossa laughing as she holds a microphone during a Medcom ID interview." },
-      credit: {
-        text: { id: "Rossa dalam wawancara, 2023. Still oleh", en: "Rossa in an interview, 2023. Still by" },
-        source: { label: "Medcom ID", href: "https://commons.wikimedia.org/wiki/File:Rossa_at_Ngobras_Special_Medcom_ID.png" },
-        license: { label: "CC BY 3.0", href: "https://creativecommons.org/licenses/by/3.0/" },
-        note: { id: "Crop dan konversi monokrom untuk katalog.", en: "Cropped and converted to monochrome for the catalogue." }
-      }
-    },
-
-    // Kalimat besar di halaman Biografi
+    // Kalimat besar di bawah judul profil
     statement: {
       id: "Lukisan, patung, dan apa pun yang datang berikutnya.",
       en: "Painting, sculpture, and whatever comes next."
     },
 
-    // Paragraf biografi, tampil berurutan. Paragraf 1 dan 2 dari copy website.
+    // Paragraf profil, tampil berurutan.
     biography: [
+      // [CEK] berdasarkan liputan ELLE Indonesia, 2022
       {
         id: "Di rumah Rossa, lukisan berukuran besar mendapat tempat di ruang yang diterangi cahaya jendela. Saat berbincang dengan ELLE Indonesia pada 2022, ia bercerita tentang perubahan seleranya dalam menata rumah. Ia mulai menghadirkan karya kontemporer dengan warna yang lebih berani. Baginya, melihat karya-karya itu di rumah membawa kegembiraan tersendiri.",
-        // [CEK] terjemahan Inggris
         en: "In Rossa's home, large paintings are given space in rooms lit by the windows. Speaking with ELLE Indonesia in 2022, she described how her taste in furnishing her home had changed. She began bringing in contemporary works in bolder colours. For her, seeing those works at home brings a joy of its own."
       },
       {
-        id: "Publik mengenal Rossa lewat lagu seperti *Tegar*, ciptaan Melly Goeslaw yang ia bawakan pada 1999. Di katalog ini, ia hadir sebagai kolektor. Melalui pilihan lukisan dan patung dari koleksi pribadinya, pengunjung diajak melihat karya-karya yang selama ini ia nikmati dari dekat.",
-        // [CEK] terjemahan Inggris
-        en: "The public knows Rossa through songs such as *Tegar*, written by Melly Goeslaw and recorded by her in 1999. In this catalogue she appears as a collector. Through a selection of paintings and sculptures from her private collection, visitors are invited to see up close the works she has long enjoyed."
+        id: "Katalog ini menghadirkan Rossa sebagai kolektor. Lewat pilihan lukisan dan patung dari koleksi pribadinya, pengunjung diajak melihat dari dekat karya-karya yang selama ini ia nikmati di rumah, beserta para seniman di baliknya.",
+        en: "This catalogue presents Rossa as a collector. Through a selection of paintings and sculptures from her private collection, visitors are invited to see up close the works she has long enjoyed at home, and the artists behind them."
       },
       // [CEK] Komisi TEGAR.
       {
-        id: "Rossa juga mengoleksi lewat komisi. *TEGAR*, patung yang berangkat dari lagunya tahun 1999, saat ini sedang diciptakan untuknya oleh Aditya Sena Hadikusumo.",
-        en: "Rossa also collects through commission. *TEGAR*, a sculpture drawn from her 1999 song, is currently being created for her by Aditya Sena Hadikusumo."
+        id: "Rossa juga mengoleksi lewat komisi. *TEGAR*, patung karya Aditya Sena Hadikusumo, saat ini sedang diciptakan khusus untuk koleksinya.",
+        en: "Rossa also collects through commission. *TEGAR*, a sculpture by Aditya Sena Hadikusumo, is currently being created especially for her collection."
       }
+      // [DUMMY] Paragraf tambahan, isi setelah ada keterangan dari Rossa, misalnya
+      // sejak kapan mulai mengoleksi atau apa yang ia cari dari sebuah karya:
+      // , { id: "Teks Indonesia.", en: "English text." }
     ],
 
     // Cerita akuisisi pertama atau alasan memilih satu karya.
@@ -724,7 +713,7 @@ window.SITE = {
       work: ""
     },
 
-    // Label liputan, tampil di bawah biografi.
+    // Label liputan, tampil di bawah paragraf profil.
     coverage: {
       title: { id: "Di rumah Rossa", en: "At Rossa's home" },
       text: { id: "Dalam episode *My Home My Style*, Rossa memperlihatkan sejumlah karya favorit di kediamannya.",
@@ -733,40 +722,28 @@ window.SITE = {
               href: "https://elle.co.id/elle-tv/rossa-unjuk-koleksi-seni-yang-menghidupkan-karakter-rumahnya-my-home-my-style" }
     },
 
-    // Kolom data singkat di halaman Biografi. Baris "Koleksi" dibuat otomatis dari daftar kategori.
+    // Kolom data singkat di samping paragraf profil. Baris "Koleksi" dibuat otomatis dari daftar kategori.
     facts: [
-      { label: { id: "Lahir", en: "Born" },
-        value: { id: "Sumedang, Jawa Barat, 9 Oktober 1978", en: "Sumedang, West Java, 9 October 1978" } },
-      { label: { id: "Dikenal sebagai", en: "Known as" },
-        value: { id: "Rossa, Teh Oca; di Malaysia, Dato' Sri Rossa", en: "Rossa, Teh Oca; in Malaysia, Dato' Sri Rossa" } },
-      { label: { id: "Pendidikan", en: "Education" },
-        value: { id: "FISIP Universitas Indonesia, lulus 2002", en: "Faculty of Social and Political Sciences, Universitas Indonesia, 2002" } }
+      // [CEK]
+      { label: { id: "Minat", en: "Interest" },
+        value: { id: "Seni rupa kontemporer dengan warna yang berani", en: "Contemporary art in bold colours" } },
+      // [CEK]
+      { label: { id: "Cara mengoleksi", en: "How she collects" },
+        value: { id: "Akuisisi dan komisi karya", en: "Acquisition and commission" } },
+      // [CEK]
+      { label: { id: "Karya komisi", en: "Commission" },
+        value: { id: "TEGAR, oleh Aditya Sena Hadikusumo (dalam proses)", en: "TEGAR, by Aditya Sena Hadikusumo (in progress)" } }
       // [DUMMY] contoh baris tambahan:
-      // { label: { id: "Mulai mengoleksi", en: "Collecting since" }, value: "20XX" },
+      // , { label: { id: "Mulai mengoleksi", en: "Collecting since" }, value: "20XX" }
     ],
 
-    // Foto arsip karier di samping tonggak perjalanan. Berwarna, rasio asli.
-    stagePhoto: {
-      src: "https://upload.wikimedia.org/wikipedia/commons/1/14/ROSSA_THE_JOURNEY_OF_21_DAZZLING_YEARS_%282017%29.jpg",
-      width: 1291, height: 1614,
-      alt: { id: "Rossa di atas panggung konser The Journey of 21 Dazzling Years, 2017.",
-             en: "Rossa on stage at The Journey of 21 Dazzling Years concert, 2017." },
-      credit: {
-        text: { id: "Konser *The Journey of 21 Dazzling Years*, 2017. Foto:", en: "*The Journey of 21 Dazzling Years* concert, 2017. Photo:" },
-        source: { label: "Nash Rassudin", href: "https://commons.wikimedia.org/wiki/File:ROSSA_THE_JOURNEY_OF_21_DAZZLING_YEARS_(2017).jpg" },
-        license: { label: "CC BY-SA 4.0", href: "https://creativecommons.org/licenses/by-sa/4.0/" }
-      }
-    },
-
-    // Tonggak perjalanan. [CEK] semua tahun berdasarkan sumber publik.
+    // Perjalanan koleksi. Hanya tonggak yang berkaitan dengan koleksi seni.
     milestones: [
-      { year: "1988", text: { id: "Album pertama, *Gadis Ingusan*.", en: "First album, *Gadis Ingusan*." } },
-      { year: "1996", text: { id: "*Nada-Nada Cinta* melambungkan namanya.", en: "*Nada-Nada Cinta* brings her to national attention." } },
-      { year: "1999", text: { id: "Album *Tegar*, bersertifikat multi-platinum.", en: "The album *Tegar*, certified multi-platinum." } },
-      { year: "2002", text: { id: "Lulus dari FISIP Universitas Indonesia.", en: "Graduates from Universitas Indonesia." } },
-      { year: "2010", text: { id: "Konser *Melodi Cinta* di Stadium Putra Bukit Jalil, Malaysia, di hadapan lebih dari 12.000 penonton.", en: "*Melodi Cinta* concert at Stadium Putra Bukit Jalil, Malaysia, for more than 12,000 people." } },
-      { year: "2023", text: { id: "Album *Another Journey: The Beginning*.", en: "Releases *Another Journey: The Beginning*." } },
+      // [CEK]
+      { year: "2022", text: { id: "Memperlihatkan koleksi seni di rumahnya dalam liputan *My Home My Style* ELLE Indonesia.", en: "Shows the art collection in her home in ELLE Indonesia's *My Home My Style*." } },
       { year: { id: "Kini", en: "Now" }, text: { id: "Patung komisi *TEGAR* dalam proses penciptaan bersama Aditya Sena Hadikusumo.", en: "The commissioned sculpture *TEGAR* is in progress with Aditya Sena Hadikusumo." } }
+      // [DUMMY] contoh tonggak tambahan, isi setelah dikonfirmasi tim Rossa:
+      // , { year: "20XX", text: { id: "Karya pertama masuk koleksi.", en: "First work enters the collection." } }
     ]
   },
 
@@ -1124,11 +1101,11 @@ window.SITE = {
   const UI = {
     id: {
       skip: 'Langsung ke konten', mainNav: 'Navigasi utama',
-      nav: { home: 'Rossa', biography: 'Biografi', collection: 'Koleksi', artists: 'Seniman' },
+      nav: { home: 'Rossa', collection: 'Koleksi', artists: 'Seniman' },
       menu: 'Buka menu', close: 'Tutup menu', language: 'Bahasa', contact: 'Kontak',
-      aboutCollector: 'Tentang kolektor', enter: 'Lihat koleksi', readBio: 'Baca biografi',
+      aboutCollector: 'Tentang kolektor', enter: 'Lihat koleksi', readBio: 'Tentang Rossa',
       counts: (w, a) => w + ' karya dari ' + a + ' seniman',
-      biography: 'Biografi', milestones: 'Tonggak perjalanan', collectionFact: 'Koleksi',
+      biography: 'Profil kolektor', milestones: 'Perjalanan koleksi', collectionFact: 'Koleksi',
       walkCollection: 'Jelajahi koleksi', chapter: 'Koleksi',
       works: n => n + ' karya',
       hintScroll: 'Gulir untuk menjelajah', hintSwipe: 'Usap untuk menjelajah',
@@ -1150,11 +1127,11 @@ window.SITE = {
     },
     en: {
       skip: 'Skip to content', mainNav: 'Main navigation',
-      nav: { home: 'Rossa', biography: 'Biography', collection: 'Collection', artists: 'Artists' },
+      nav: { home: 'Rossa', collection: 'Collection', artists: 'Artists' },
       menu: 'Open menu', close: 'Close menu', language: 'Language', contact: 'Contact',
-      aboutCollector: 'About the collector', enter: 'View the collection', readBio: 'Read the biography',
+      aboutCollector: 'About the collector', enter: 'View the collection', readBio: 'About Rossa',
       counts: (w, a) => w + (w === 1 ? ' work' : ' works') + ' by ' + a + (a === 1 ? ' artist' : ' artists'),
-      biography: 'Biography', milestones: 'Milestones', collectionFact: 'Collection',
+      biography: 'Collector profile', milestones: 'Collecting journey', collectionFact: 'Collection',
       walkCollection: 'Walk the collection', chapter: 'Collection',
       works: n => n + (n === 1 ? ' work' : ' works'),
       hintScroll: 'Scroll to walk the collection', hintSwipe: 'Swipe to walk the collection',
@@ -1331,7 +1308,6 @@ window.SITE = {
   const skip = document.getElementById('skip');
   const PAGES = [
     { key: 'home', href: '#/' },
-    { key: 'biography', href: '#/biography' },
     { key: 'collection', href: '#/collection' },
     { key: 'artists', href: '#/artists' }
   ];
@@ -1895,12 +1871,13 @@ window.SITE = {
           '<div class="home-about"><span class="label">' + tx(L().aboutCollector) + '</span><p>' + rich(collector.intro) + '</p></div>' +
           '<div class="home-cta">' +
             '<a class="btn-pill" href="#/collection" data-fresh>' + tx(L().enter) + ICON.right + '</a>' +
-            '<a class="link-u" href="#/biography" data-fresh>' + tx(L().readBio) + '</a>' +
+            '<a class="link-u" href="#/biography" data-to-profile>' + tx(L().readBio) + '</a>' +
           '</div>' +
           (nW ? '<span class="home-count">' + esc(L().counts(nW, nA)) + '</span>' : '') +
         '</div>' +
         (collector.portrait ? '<figure class="portrait"><img src="' + esc(collector.portrait) + '" alt="' + tx(collector.portraitAlt) + '" fetchpriority="high"></figure>' : '') +
-      '</section>';
+      '</section>' +
+      profileHTML();
     splitHomeTitle();
     return '';
   }
@@ -1955,22 +1932,20 @@ window.SITE = {
     });
   }
 
-  function renderBiography() {
+  // Profil Rossa sebagai kolektor. Dulu halaman Biografi tersendiri; kini satu
+  // halaman dengan beranda, tampil di bawah bagian pembuka. Alamat lama
+  // #/biography tetap berlaku dan langsung menggulir ke bagian ini.
+  function profileHTML() {
     const catNames = CHAPTERS.filter(c => c !== OTHER).map(c => t(c.name));
     const facts = (collector.facts || []).map(f => [t(f.label), t(f.value)]).filter(f => f[0] && f[1]);
     if (catNames.length) facts.push([L().collectionFact, lowerRest(catNames)]);
     const ms = collector.milestones || [];
-    main.innerHTML =
-      '<article class="page bio">' +
+    return '<article class="page bio home-profile" id="profil" aria-labelledby="profil-title">' +
         '<header class="bio-head"><div>' +
           '<span class="label">' + tx(L().biography) + '</span>' +
-          '<h1 class="bio-title' + (collector.bioTitle ? ' long' : '') + '">' + rich(collector.bioTitle || collector.name) + '</h1>' +
-          (collector.fullName ? '<p class="bio-full">' + tx(collector.fullName) + '</p>' : '') +
+          '<h2 class="bio-title' + (collector.bioTitle ? ' long' : '') + '" id="profil-title">' + rich(collector.bioTitle || collector.name) + '</h2>' +
           (collector.statement ? '<p class="bio-statement">' + rich(collector.statement) + '</p>' : '') +
-        '</div>' +
-        (collector.bioPortrait && collector.bioPortrait.src ? photoHTML(collector.bioPortrait, 'collector-portrait')
-          : collector.portrait ? '<figure class="portrait"><img src="' + esc(collector.portrait) + '" alt="' + tx(collector.portraitAlt) + '"></figure>' : '') +
-        '</header>' +
+        '</div></header>' +
         '<div class="bio-body">' +
           (facts.length ? '<dl class="facts">' + facts.map(f => '<div><dt>' + esc(f[0]) + '</dt><dd>' + esc(f[1]) + '</dd></div>').join('') + '</dl>' : '<div></div>') +
           '<div class="prose">' + (collector.biography || []).map(p => '<p>' + rich(p) + '</p>').join('') +
@@ -1982,7 +1957,10 @@ window.SITE = {
           '</ol>' + photoHTML(collector.stagePhoto, 'stage-photo') + '</div></section>' : '') +
         '<div class="page-end"><a class="btn-pill" href="#/collection" data-fresh>' + tx(L().walkCollection) + ICON.right + '</a></div>' +
       '</article>';
-    return t(L().biography);
+  }
+  function scrollToProfile(smooth) {
+    const el = document.getElementById('profil');
+    if (el) window.scrollTo({ top: Math.round(el.getBoundingClientRect().top + window.scrollY), behavior: smooth && !reduced() ? 'smooth' : 'auto' });
   }
 
   // Cerita kolektor: hanya tampil setelah Rossa menyampaikannya sendiri.
@@ -2184,7 +2162,7 @@ window.SITE = {
     const parts = raw.split('/').filter(Boolean);
     const a = parts[0], b = parts[1];
     if (!a) return { name: 'home', page: 'home', key: '/' };
-    if (a === 'biography') return { name: 'biography', page: 'biography', key: '/biography' };
+    if (a === 'biography') return { name: 'home', page: 'home', key: '/', profile: true };
     if (a === 'collection') return { name: 'collection', page: 'collection', focus: b || null, key: '/collection' };
     if (a === 'index') return { name: 'index', page: 'collection', filter: b || null, key: '/index/' + (b || '') };
     if (a === 'artists') return b ? { name: 'artist', page: 'artists', slug: b, key: '/artists/' + b } : { name: 'artists', page: 'artists', key: '/artists' };
@@ -2215,7 +2193,6 @@ window.SITE = {
     let title;
     switch (route.name) {
       case 'home': title = renderHome(); break;
-      case 'biography': title = renderBiography(); break;
       case 'collection': title = renderCollection(); break;
       case 'index': title = renderIndex(route); break;
       case 'artists': title = renderArtists(); break;
@@ -2234,6 +2211,7 @@ window.SITE = {
     window.scrollTo(0, y);
     requestAnimationFrame(() => {
       if (wantFocus && current.walk) current.walk.scrollToChapter(route.focus, false);
+      else if (route.profile && opts.keepScroll == null) scrollToProfile(false);
       else window.scrollTo(0, y);
       if (current.walk) current.walk.update(true);
     });
@@ -2268,6 +2246,7 @@ window.SITE = {
     }
     const first = tgt.closest('[data-walk-first]');
     if (first && current.walk) { e.preventDefault(); current.walk.scrollToWork(0, true); return; }
+    if (tgt.closest('[data-to-profile]') && document.getElementById('profil')) { e.preventDefault(); scrollToProfile(true); return; }
     const a = tgt.closest('a[href^="#"]');
     if (a) {
       if (a.hasAttribute('data-fresh')) fresh = true;

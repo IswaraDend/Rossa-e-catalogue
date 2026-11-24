@@ -43,11 +43,11 @@
   const UI = {
     id: {
       skip: 'Langsung ke konten', mainNav: 'Navigasi utama',
-      nav: { home: 'Rossa', biography: 'Biografi', collection: 'Koleksi', artists: 'Seniman' },
+      nav: { home: 'Rossa', collection: 'Koleksi', artists: 'Seniman' },
       menu: 'Buka menu', close: 'Tutup menu', language: 'Bahasa', contact: 'Kontak',
-      aboutCollector: 'Tentang kolektor', enter: 'Lihat koleksi', readBio: 'Baca biografi',
+      aboutCollector: 'Tentang kolektor', enter: 'Lihat koleksi', readBio: 'Tentang Rossa',
       counts: (w, a) => w + ' karya dari ' + a + ' seniman',
-      biography: 'Biografi', milestones: 'Tonggak perjalanan', collectionFact: 'Koleksi',
+      biography: 'Profil kolektor', milestones: 'Perjalanan koleksi', collectionFact: 'Koleksi',
       walkCollection: 'Jelajahi koleksi', chapter: 'Koleksi',
       works: n => n + ' karya',
       hintScroll: 'Gulir untuk menjelajah', hintSwipe: 'Usap untuk menjelajah',
@@ -69,11 +69,11 @@
     },
     en: {
       skip: 'Skip to content', mainNav: 'Main navigation',
-      nav: { home: 'Rossa', biography: 'Biography', collection: 'Collection', artists: 'Artists' },
+      nav: { home: 'Rossa', collection: 'Collection', artists: 'Artists' },
       menu: 'Open menu', close: 'Close menu', language: 'Language', contact: 'Contact',
-      aboutCollector: 'About the collector', enter: 'View the collection', readBio: 'Read the biography',
+      aboutCollector: 'About the collector', enter: 'View the collection', readBio: 'About Rossa',
       counts: (w, a) => w + (w === 1 ? ' work' : ' works') + ' by ' + a + (a === 1 ? ' artist' : ' artists'),
-      biography: 'Biography', milestones: 'Milestones', collectionFact: 'Collection',
+      biography: 'Collector profile', milestones: 'Collecting journey', collectionFact: 'Collection',
       walkCollection: 'Walk the collection', chapter: 'Collection',
       works: n => n + (n === 1 ? ' work' : ' works'),
       hintScroll: 'Scroll to walk the collection', hintSwipe: 'Swipe to walk the collection',
@@ -250,7 +250,6 @@
   const skip = document.getElementById('skip');
   const PAGES = [
     { key: 'home', href: '#/' },
-    { key: 'biography', href: '#/biography' },
     { key: 'collection', href: '#/collection' },
     { key: 'artists', href: '#/artists' }
   ];
@@ -814,12 +813,13 @@
           '<div class="home-about"><span class="label">' + tx(L().aboutCollector) + '</span><p>' + rich(collector.intro) + '</p></div>' +
           '<div class="home-cta">' +
             '<a class="btn-pill" href="#/collection" data-fresh>' + tx(L().enter) + ICON.right + '</a>' +
-            '<a class="link-u" href="#/biography" data-fresh>' + tx(L().readBio) + '</a>' +
+            '<a class="link-u" href="#/biography" data-to-profile>' + tx(L().readBio) + '</a>' +
           '</div>' +
           (nW ? '<span class="home-count">' + esc(L().counts(nW, nA)) + '</span>' : '') +
         '</div>' +
         (collector.portrait ? '<figure class="portrait"><img src="' + esc(collector.portrait) + '" alt="' + tx(collector.portraitAlt) + '" fetchpriority="high"></figure>' : '') +
-      '</section>';
+      '</section>' +
+      profileHTML();
     splitHomeTitle();
     return '';
   }
@@ -874,22 +874,20 @@
     });
   }
 
-  function renderBiography() {
+  // Profil Rossa sebagai kolektor. Dulu halaman Biografi tersendiri; kini satu
+  // halaman dengan beranda, tampil di bawah bagian pembuka. Alamat lama
+  // #/biography tetap berlaku dan langsung menggulir ke bagian ini.
+  function profileHTML() {
     const catNames = CHAPTERS.filter(c => c !== OTHER).map(c => t(c.name));
     const facts = (collector.facts || []).map(f => [t(f.label), t(f.value)]).filter(f => f[0] && f[1]);
     if (catNames.length) facts.push([L().collectionFact, lowerRest(catNames)]);
     const ms = collector.milestones || [];
-    main.innerHTML =
-      '<article class="page bio">' +
+    return '<article class="page bio home-profile" id="profil" aria-labelledby="profil-title">' +
         '<header class="bio-head"><div>' +
           '<span class="label">' + tx(L().biography) + '</span>' +
-          '<h1 class="bio-title' + (collector.bioTitle ? ' long' : '') + '">' + rich(collector.bioTitle || collector.name) + '</h1>' +
-          (collector.fullName ? '<p class="bio-full">' + tx(collector.fullName) + '</p>' : '') +
+          '<h2 class="bio-title' + (collector.bioTitle ? ' long' : '') + '" id="profil-title">' + rich(collector.bioTitle || collector.name) + '</h2>' +
           (collector.statement ? '<p class="bio-statement">' + rich(collector.statement) + '</p>' : '') +
-        '</div>' +
-        (collector.bioPortrait && collector.bioPortrait.src ? photoHTML(collector.bioPortrait, 'collector-portrait')
-          : collector.portrait ? '<figure class="portrait"><img src="' + esc(collector.portrait) + '" alt="' + tx(collector.portraitAlt) + '"></figure>' : '') +
-        '</header>' +
+        '</div></header>' +
         '<div class="bio-body">' +
           (facts.length ? '<dl class="facts">' + facts.map(f => '<div><dt>' + esc(f[0]) + '</dt><dd>' + esc(f[1]) + '</dd></div>').join('') + '</dl>' : '<div></div>') +
           '<div class="prose">' + (collector.biography || []).map(p => '<p>' + rich(p) + '</p>').join('') +
@@ -901,7 +899,10 @@
           '</ol>' + photoHTML(collector.stagePhoto, 'stage-photo') + '</div></section>' : '') +
         '<div class="page-end"><a class="btn-pill" href="#/collection" data-fresh>' + tx(L().walkCollection) + ICON.right + '</a></div>' +
       '</article>';
-    return t(L().biography);
+  }
+  function scrollToProfile(smooth) {
+    const el = document.getElementById('profil');
+    if (el) window.scrollTo({ top: Math.round(el.getBoundingClientRect().top + window.scrollY), behavior: smooth && !reduced() ? 'smooth' : 'auto' });
   }
 
   // Cerita kolektor: hanya tampil setelah Rossa menyampaikannya sendiri.
@@ -1103,7 +1104,7 @@
     const parts = raw.split('/').filter(Boolean);
     const a = parts[0], b = parts[1];
     if (!a) return { name: 'home', page: 'home', key: '/' };
-    if (a === 'biography') return { name: 'biography', page: 'biography', key: '/biography' };
+    if (a === 'biography') return { name: 'home', page: 'home', key: '/', profile: true };
     if (a === 'collection') return { name: 'collection', page: 'collection', focus: b || null, key: '/collection' };
     if (a === 'index') return { name: 'index', page: 'collection', filter: b || null, key: '/index/' + (b || '') };
     if (a === 'artists') return b ? { name: 'artist', page: 'artists', slug: b, key: '/artists/' + b } : { name: 'artists', page: 'artists', key: '/artists' };
@@ -1134,7 +1135,6 @@
     let title;
     switch (route.name) {
       case 'home': title = renderHome(); break;
-      case 'biography': title = renderBiography(); break;
       case 'collection': title = renderCollection(); break;
       case 'index': title = renderIndex(route); break;
       case 'artists': title = renderArtists(); break;
@@ -1153,6 +1153,7 @@
     window.scrollTo(0, y);
     requestAnimationFrame(() => {
       if (wantFocus && current.walk) current.walk.scrollToChapter(route.focus, false);
+      else if (route.profile && opts.keepScroll == null) scrollToProfile(false);
       else window.scrollTo(0, y);
       if (current.walk) current.walk.update(true);
     });
@@ -1187,6 +1188,7 @@
     }
     const first = tgt.closest('[data-walk-first]');
     if (first && current.walk) { e.preventDefault(); current.walk.scrollToWork(0, true); return; }
+    if (tgt.closest('[data-to-profile]') && document.getElementById('profil')) { e.preventDefault(); scrollToProfile(true); return; }
     const a = tgt.closest('a[href^="#"]');
     if (a) {
       if (a.hasAttribute('data-fresh')) fresh = true;
