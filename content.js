@@ -44,7 +44,7 @@ window.SITE = {
      ------------------------------------------------------------------- */
   collector: {
     name: "Rossa",
-    fullName: "Sri Rossa Roslaina Handiyani",
+    fullName: "",
     portrait: "images/rossa/rossa-portrait.jpg",
     portraitAlt: { id: "Potret Rossa", en: "Portrait of Rossa" },
 
@@ -53,10 +53,22 @@ window.SITE = {
     heroLine2: { id: "Rossa", en: "Collection" },
 
     // Paragraf pendek di beranda
-    intro: {
-      id: "Lukisan dan patung dari koleksi pribadi Rossa.",
-      en: "Paintings and sculpture from Rossa's private collection."
-    },
+    // Teks "Tentang Rossa" di beranda. Satu blok { id, en } = satu paragraf.
+    // [CEK] penulis lagu dan tahun rilis Tegar; karya Sekar Puti
+    intro: [
+      {
+        id: "Publik mengenal Rossa lewat lagu-lagu seperti *Tegar*, yang ditulis Melly Goeslaw dan direkam Rossa pada 1999. Katalog ini memperkenalkannya sebagai kolektor, mengajak pengunjung melihat lebih dekat lukisan dan patung yang selama ini ia nikmati di rumahnya sendiri.",
+        en: "Rossa is widely known for songs such as *Tegar*, which Melly Goeslaw wrote and Rossa recorded in 1999. This catalogue introduces her as a collector, inviting visitors to take a closer look at the paintings and sculptures she has long enjoyed in her own home."
+      },
+      {
+        id: "Saat rumahnya dikunjungi, Rossa mengenang bagaimana ia memilih karya kontemporer dengan warna yang lebih berani ketika menata ulang rumahnya. Ia bercerita tentang kegembiraan yang dibawa karya-karya itu ke dalam rumah. Salah satu karya yang terdokumentasi dalam kunjungan itu adalah *It’s About Time*, patung keramik karya Sekar Puti.",
+        en: "During a visit to her home, Rossa recalled choosing contemporary works in bolder colours as she redecorated. She spoke of the joy those works brought into her home. Among the pieces documented during the visit was *It’s About Time*, a ceramic sculpture by Sekar Puti."
+      },
+      {
+        id: "Rossa juga memesan karya khusus untuk koleksinya. Salah satunya membawa musiknya masuk ke dalam koleksi itu sendiri. Aditya Sena Hadikusumo kini sedang menciptakan *TEGAR*, patung yang terinspirasi dari lagunya tahun 1999.",
+        en: "Rossa also commissions works for her collection. One such commission brings her music into the collection itself. Aditya Sena Hadikusumo is currently creating *TEGAR*, a sculpture inspired by her 1999 song."
+      }
+    ],
 
     // Profil kolektor: tampil di halaman Rossa, di bawah bagian pembuka.
     // Fokusnya Rossa sebagai kolektor seni, bukan karier musiknya.
@@ -71,19 +83,20 @@ window.SITE = {
 
     // Paragraf profil, tampil berurutan.
     biography: [
+      // [CEK] tahun rilis Tegar (1999)
+      {
+        id: "Publik mengenal Rossa lewat lagu-lagu seperti *Tegar* (1999). Ia juga seorang kolektor. Katalog ini menghadirkan pilihan lukisan dan patung dari koleksi pribadinya: karya-karya yang selama ini ia nikmati di rumah, kini dapat dilihat dari dekat.",
+        en: "Known to the public for songs such as *Tegar* (1999), Rossa is also a collector. This catalogue presents a selection of paintings and sculptures from her private collection: works she has long enjoyed at home, now shown up close."
+      },
       // [CEK] berdasarkan liputan ELLE Indonesia, 2022
       {
-        id: "Di rumah Rossa, lukisan berukuran besar mendapat tempat di ruang yang diterangi cahaya jendela. Saat berbincang dengan ELLE Indonesia pada 2022, ia bercerita tentang perubahan seleranya dalam menata rumah. Ia mulai menghadirkan karya kontemporer dengan warna yang lebih berani. Baginya, melihat karya-karya itu di rumah membawa kegembiraan tersendiri.",
-        en: "In Rossa's home, large paintings are given space in rooms lit by the windows. Speaking with ELLE Indonesia in 2022, she described how her taste in furnishing her home had changed. She began bringing in contemporary works in bolder colours. For her, seeing those works at home brings a joy of its own."
-      },
-      {
-        id: "Katalog ini menghadirkan Rossa sebagai kolektor. Lewat pilihan lukisan dan patung dari koleksi pribadinya, pengunjung diajak melihat dari dekat karya-karya yang selama ini ia nikmati di rumah, beserta para seniman di baliknya.",
-        en: "This catalogue presents Rossa as a collector. Through a selection of paintings and sculptures from her private collection, visitors are invited to see up close the works she has long enjoyed at home, and the artists behind them."
+        id: "Di rumahnya, lukisan berukuran besar mendapat tempat di ruang yang diterangi cahaya jendela. Seiring waktu, seleranya bergeser ke karya kontemporer dengan warna yang lebih berani. Baginya, melihat karya-karya itu di rumah membawa kegembiraan tersendiri.",
+        en: "In her home, large paintings are given space in rooms lit by the windows. Over time her taste has turned towards contemporary works in bolder colours. For her, seeing those works at home brings a joy of its own."
       },
       // [CEK] Komisi TEGAR.
       {
-        id: "Rossa juga mengoleksi lewat komisi. *TEGAR*, patung karya Aditya Sena Hadikusumo, saat ini sedang diciptakan khusus untuk koleksinya.",
-        en: "Rossa also collects through commission. *TEGAR*, a sculpture by Aditya Sena Hadikusumo, is currently being created especially for her collection."
+        id: "Rossa juga mengoleksi lewat komisi. *TEGAR*, patung yang berangkat dari lagunya tahun 1999, kini sedang diciptakan untuknya oleh Aditya Sena Hadikusumo.",
+        en: "Rossa also collects through commission. *TEGAR*, a sculpture drawn from her 1999 song, is being created for her by Aditya Sena Hadikusumo."
       }
       // [DUMMY] Paragraf tambahan, isi setelah ada keterangan dari Rossa, misalnya
       // sejak kapan mulai mengoleksi atau apa yang ia cari dari sebuah karya:

@@ -10,6 +10,9 @@
 @font-face{font-family:"Cormorant Garamond";font-style:italic;font-weight:400;font-display:swap;src:url("fonts/cormorant-garamond-latin-400-italic.woff2") format("woff2")}
 @font-face{font-family:"Cormorant Garamond";font-style:italic;font-weight:500;font-display:swap;src:url("fonts/cormorant-garamond-latin-500-italic.woff2") format("woff2")}
 
+/* ---------- Huruf sambung: Pinyon Script (SIL Open Font License) ---------- */
+@font-face{font-family:"Pinyon Script";font-style:normal;font-weight:400;font-display:block;src:url("fonts/pinyon-script-latin-400-normal.woff2") format("woff2")}
+
 /* ---------- Ukuran dasar ---------- */
 :root{
   --serif:"Cormorant Garamond","Cormorant",Garamond,"Times New Roman",serif;
@@ -26,8 +29,9 @@
    linen  : ruang lukisan, peach linen dari latar potret Rossa
    velvet : ruang patung, beludru gelap dengan aksen champagne
    stone  : abu batu, cadangan untuk kategori baru
-   olive  : hijau zaitun gelap, cadangan untuk kategori baru */
-body{
+   olive  : hijau zaitun gelap, cadangan untuk kategori baru
+   Ruang dipasang di body dan di tiap bab dinding koleksi (.walk-ch). */
+body,.walk-ch{
   --bg:#FBF7F2; --ink:#2B1F1C; --muted:#86736A; --soft:#B5A399;
   --line:rgba(43,31,28,.15); --wire:rgba(43,31,28,.34);
   --accent:#8A4E47; --glow:rgba(255,255,255,.92);
@@ -35,13 +39,13 @@ body{
   --pill:rgba(255,255,255,.7); --pill-line:rgba(43,31,28,.13);
   --bar:#D3C5BC; --bar-on:#2B1F1C; --frame:rgba(43,31,28,.22);
 }
-body[data-room="linen"]{
+[data-room="linen"]{
   --bg:#F2E5DB; --muted:#86695E; --soft:#B99F92;
   --wire:rgba(43,31,28,.36); --glow:rgba(255,250,245,.92);
   --floor:#E6D4C7; --plinth:#FCF8F4; --plinth-shade:#EADBD0;
   --pill:rgba(255,251,247,.66); --bar:#CDB4A7;
 }
-body[data-room="velvet"]{
+[data-room="velvet"]{
   --bg:#231B1B; --ink:#F1E8E0; --muted:#AE9C92; --soft:#75655E;
   --line:rgba(241,232,224,.14); --wire:rgba(241,232,224,.26);
   --accent:#CFAE7C; --glow:rgba(255,222,190,.10);
@@ -49,12 +53,12 @@ body[data-room="velvet"]{
   --pill:rgba(255,255,255,.05); --pill-line:rgba(241,232,224,.15);
   --bar:#5C4E48; --bar-on:#F1E8E0; --frame:rgba(241,232,224,.22);
 }
-body[data-room="stone"]{
+[data-room="stone"]{
   --bg:#E6E3DE; --muted:#78716B; --soft:#A9A29B;
   --accent:#6E5847; --glow:rgba(255,255,255,.8);
   --floor:#D8D3CC; --plinth:#F7F5F2; --plinth-shade:#DAD5CE; --bar:#BEB7AF;
 }
-body[data-room="olive"]{
+[data-room="olive"]{
   --bg:#2E3027; --ink:#EEEDE4; --muted:#A6A894; --soft:#686A5C;
   --line:rgba(238,237,228,.14); --wire:rgba(238,237,228,.26);
   --accent:#CBB78B; --glow:rgba(240,235,200,.08);
@@ -205,7 +209,12 @@ main{margin-left:var(--side-w);min-height:100vh}
     mask-image:linear-gradient(to right,transparent calc(var(--side-w) - 64px),#000 calc(var(--side-w) + 28px));
   }
 }
-.walk-track{position:absolute;left:0;top:0;height:100%;display:flex;will-change:transform}
+.walk-track{position:absolute;left:0;top:0;height:100%}
+.walk-ch{position:absolute;top:0;height:100%;display:flex;will-change:transform}
+.walk.stacked .walk-ch{background:var(--bg);color:var(--ink)}
+.walk.stacked .walk-ch::before,.walk.stacked .walk-ch::after{content:"";position:absolute;top:0;bottom:0;width:100vw;background:inherit}
+.walk.stacked .walk-ch::before{right:100%}
+.walk.stacked .walk-ch::after{left:100%}
 .wi{position:relative;flex:0 0 auto;height:100%}
 .floor{
   position:absolute;left:0;right:0;bottom:0;
@@ -293,21 +302,22 @@ main{margin-left:var(--side-w);min-height:100vh}
 .home{
   min-height:100vh;min-height:100svh;
   display:grid;grid-template-columns:minmax(0,1fr) auto;
-  grid-template-rows:1fr auto auto 1fr;
-  grid-template-areas:". portrait" "head portrait" "body portrait" ". portrait";
+  grid-template-rows:1fr auto auto auto 1fr;
+  grid-template-areas:". portrait" "head portrait" "body portrait" "cta portrait" ". portrait";
   column-gap:clamp(32px,5vw,96px);
   padding:72px var(--pad) calc(var(--dock-h) + 8px) clamp(20px,6vw,110px);
 }
 .home-head{grid-area:head}
 .home-body{grid-area:body}
 .home .portrait{grid-area:portrait;align-self:center}
-.home-title{font-weight:300;font-size:clamp(60px,min(8vw,13vh),140px);line-height:.88;letter-spacing:-.018em}
+.home-title{font-weight:300;font-size:clamp(44px,min(5.2vw,8.5vh),92px);line-height:.9;letter-spacing:-.015em}
 .home-title .l1,.home-title .l2{display:block;white-space:nowrap}
 .home-title .l2{font-style:italic;padding-left:.05em}
 .home-sub{display:block;margin-top:26px}
-.home-about{margin-top:38px;max-width:34ch}
+.home-about{margin-top:32px;max-width:46ch}
 .home-about .label{display:block;margin-bottom:10px}
-.home-about p{font-size:clamp(18px,1.35vw,21px);line-height:1.55}
+.home-about p{font-size:clamp(16px,1.12vw,18.5px);line-height:1.55}
+.home-about p + p{margin-top:.7em}
 .home-cta{display:flex;flex-wrap:wrap;align-items:center;gap:18px 30px;margin-top:36px}
 .home-count{display:block;margin-top:26px;font-size:15px;color:var(--muted);font-variant-numeric:lining-nums}
 .portrait{position:relative;margin:0;justify-self:end}
@@ -416,6 +426,65 @@ main{margin-left:var(--side-w);min-height:100vh}
 /* ---------- Transisi halaman ---------- */
 main.enter{animation:pageIn .5s var(--ease) both}
 @keyframes pageIn{from{opacity:0}to{opacity:1}}
+main.in-next{animation:slideInNext .75s var(--ease) both}
+main.in-prev{animation:slideInPrev .75s var(--ease) both}
+main.out-next{animation:slideOutNext .36s cubic-bezier(.55,0,.8,.2) both}
+main.out-prev{animation:slideOutPrev .36s cubic-bezier(.55,0,.8,.2) both}
+@keyframes slideInNext{from{opacity:0;transform:translateX(9vw)}to{opacity:1;transform:none}}
+@keyframes slideInPrev{from{opacity:0;transform:translateX(-9vw)}to{opacity:1;transform:none}}
+@keyframes slideOutNext{to{opacity:0;transform:translateX(-9vw)}}
+@keyframes slideOutPrev{to{opacity:0;transform:translateX(9vw)}}
+
+/* ---------- Pembuka situs: "Rossa" tertulis bersambung ---------- */
+.splash{position:fixed;inset:0;z-index:90;display:grid;place-items:center;background:var(--bg);transition:transform .85s cubic-bezier(.76,0,.24,1)}
+.splash.lift{transform:translateY(-100%);pointer-events:none}
+.sp-word{font-family:"Pinyon Script",var(--serif);font-size:clamp(96px,13vw,210px);line-height:1.3;padding:0 .35em;color:var(--ink);opacity:0;
+  -webkit-mask-image:linear-gradient(90deg,#000 40%,transparent 60%);mask-image:linear-gradient(90deg,#000 40%,transparent 60%);
+  -webkit-mask-size:260% 100%;mask-size:260% 100%;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;
+  -webkit-mask-position:100% 0;mask-position:100% 0}
+.splash.play .sp-word{opacity:1;animation:spWrite 1.45s cubic-bezier(.45,.05,.35,1) forwards}
+.splash.lift .sp-word{transform:translateY(-30px);opacity:0;transition:transform .6s var(--ease),opacity .45s var(--ease)}
+@keyframes spWrite{from{-webkit-mask-position:100% 0;mask-position:100% 0}to{-webkit-mask-position:0 0;mask-position:0 0}}
+
+/* ---------- Teks dinding ----------
+   Keterangan karya: turun saat karyanya di tengah, naik saat ditinggalkan.
+   Teks bab ikut gulir (lihat app.js); saat Koleksi dibuka, teks bab turun masuk. */
+.walk-track .cap > *{opacity:0;transform:translateY(-24px);transition:opacity .4s var(--ease),transform .5s var(--ease),color var(--room-t)}
+.walk-track .wi.is-on .cap > *{opacity:1;transform:none;transition:opacity .7s var(--ease),transform .9s var(--ease),color var(--room-t)}
+.walk-track .wi.is-on .cap > :nth-child(2){transition-delay:.07s,.07s,0s}
+.walk-track .wi.is-on .cap > :nth-child(3){transition-delay:.14s,.14s,0s}
+.walk-track .wi.is-on .cap > :nth-child(4){transition-delay:.21s,.21s,0s}
+.walk-track .wi.is-on .cap > :nth-child(n+5){transition-delay:.28s,.28s,0s}
+.walk.held .intro{visibility:hidden}
+.walk.drop .intro > *{animation:dropIn 1s var(--ease) both}
+.walk.drop .intro > :nth-child(2){animation-delay:.08s}
+.walk.drop .intro > :nth-child(3){animation-delay:.16s}
+.walk.drop .intro > :nth-child(4){animation-delay:.24s}
+.walk.drop .intro > :nth-child(n+5){animation-delay:.32s}
+@keyframes dropIn{from{opacity:0;transform:translateY(-36px)}to{opacity:1;transform:none}}
+
+/* Dinding tertutup lembut di tepi kolom samping: karya dan teks memudar
+   saat bergeser ke bawah nama situs dan menu, tidak menumpuk. */
+@media (min-width:900px){
+  .walk-sticky{-webkit-mask-image:linear-gradient(to right,transparent calc(var(--side-w) - 70px),#000 calc(var(--side-w) + 10px));mask-image:linear-gradient(to right,transparent calc(var(--side-w) - 70px),#000 calc(var(--side-w) + 10px))}
+}
+
+/* ---------- Tombol beranda yang terisi saat digulir ---------- */
+.charge{grid-area:cta;justify-self:start;position:relative;margin-top:30px;display:inline-block}
+.charge-btn{position:relative;overflow:hidden;isolation:isolate;display:inline-flex;align-items:center;gap:14px;padding:13px 26px 13px 28px;border:1px solid var(--ink);border-radius:999px;font-size:19px;line-height:1.2;transition:color .45s var(--ease)}
+.charge-btn svg{width:20px;height:auto;flex:0 0 auto}
+.charge-btn::before{content:"";position:absolute;inset:0;z-index:-1;background:var(--ink);transform:translateY(101%);transition:transform .5s var(--ease)}
+.charge-btn:hover,.charge-btn:focus-visible{color:var(--bg)}
+.charge-btn:hover::before,.charge-btn:focus-visible::before{transform:none}
+.charge-fill{position:absolute;inset:0;z-index:-2;background:color-mix(in srgb,var(--accent) 24%,transparent);transform:scaleX(var(--gate,0));transform-origin:left}
+.charge-cap{position:absolute;left:4px;top:calc(100% + 14px);white-space:nowrap;font-size:11.5px;font-weight:500;letter-spacing:.22em;text-transform:uppercase;color:var(--muted);opacity:calc(var(--gate,0) * 6);translate:0 calc((1 - min(1, var(--gate,0) * 6)) * -6px);transition:opacity .3s var(--ease)}
+
+/* ---------- Satu layar: beranda tidak memanjang ke bawah ---------- */
+html.one-screen,body.one-screen{height:100%;overflow:hidden;overscroll-behavior:none}
+body.one-screen main{height:100vh;height:100svh;overflow:hidden}
+body.one-screen .home{min-height:0;height:100%}
+.gate-line{position:fixed;left:0;right:0;bottom:0;height:2px;background:var(--accent);transform:scaleX(0);transform-origin:left;z-index:60;pointer-events:none}
+
 
 /* ---------- Ponsel dan tablet kecil ---------- */
 @media (max-width:899px){
@@ -452,6 +521,18 @@ main.enter{animation:pageIn .5s var(--ease) both}
   .intro-hint{margin-top:26px}
 
   .home{grid-template-columns:1fr;grid-template-rows:auto;grid-template-areas:"head" "portrait" "body";gap:0;padding:28px 20px 150px}
+  body.one-screen .home{grid-template-rows:auto minmax(0,1fr) auto;grid-template-areas:"head" "body" "cta";padding:18px 20px 104px}
+  body.one-screen .home .portrait{display:none}
+  body.one-screen .home-body{min-height:0;overflow-y:auto;overscroll-behavior:contain;scrollbar-width:none}
+  body.one-screen .home-title{font-size:clamp(40px,11vw,56px)}
+  body.one-screen .home-sub{margin-top:12px}
+  body.one-screen .home-about{margin-top:18px}
+  body.one-screen .home-about .label{display:none}
+  body.one-screen .home-about p{font-size:17px;line-height:1.45}
+  body.one-screen .home-count{margin-top:10px;font-size:14px}
+  body.one-screen .charge{margin-top:14px}
+  .charge-cap{display:none}
+  body.one-screen .charge-btn{font-size:17px;padding:11px 22px 11px 24px}
   .home-title{font-size:clamp(64px,19vw,96px)}
   .home-sub{margin-top:18px}
   .home .portrait{justify-self:stretch;margin:42px 14px 10px 14px}
@@ -532,7 +613,7 @@ main.enter{animation:pageIn .5s var(--ease) both}
 .walk-track .wire{transform-origin:50% 0;transform:rotate(var(--swing,0deg))}
 .walk-track .glow{opacity:calc(.3 + .7 * var(--f,1))}
 .walk-track .cap{opacity:calc(.42 + .58 * var(--f,1))}
-.walk-track .intro{translate:var(--px,0) 0}
+.walk-track .intro{translate:var(--px,0) var(--ty,0px);opacity:var(--op,1)}
 
 @keyframes riseIn{from{opacity:0;transform:translateY(26px)}to{opacity:1;transform:none}}
 @keyframes fadeIn{from{opacity:0}to{opacity:1}}
@@ -586,5 +667,5 @@ main.enter{animation:pageIn .5s var(--ease) both}
 
 @media (prefers-reduced-motion:reduce){
   .walk-track .art.hang,.walk-track .wire{transform:none}
-  .walk-track .intro{translate:none}
+  .walk-track .intro{translate:0 var(--ty,0px)}
 }

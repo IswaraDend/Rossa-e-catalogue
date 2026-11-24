@@ -43,9 +43,11 @@
   const UI = {
     id: {
       skip: 'Langsung ke konten', mainNav: 'Navigasi utama',
-      nav: { home: 'Rossa', collection: 'Koleksi', artists: 'Seniman' },
+      nav: { home: 'Rossa', biography: 'Biografi', collection: 'Koleksi', artists: 'Seniman' },
       menu: 'Buka menu', close: 'Tutup menu', language: 'Bahasa', contact: 'Kontak',
-      aboutCollector: 'Tentang kolektor', enter: 'Lihat koleksi', readBio: 'Tentang Rossa',
+      aboutCollector: 'Tentang Rossa',
+      enterTo: name => 'Masuk ke ' + name,
+      keepTo: (name, touch) => (touch ? 'Usap terus ke ' : 'Gulir terus ke ') + name,
       counts: (w, a) => w + ' karya dari ' + a + ' seniman',
       biography: 'Profil kolektor', milestones: 'Perjalanan koleksi', collectionFact: 'Koleksi',
       walkCollection: 'Jelajahi koleksi', chapter: 'Koleksi',
@@ -69,9 +71,11 @@
     },
     en: {
       skip: 'Skip to content', mainNav: 'Main navigation',
-      nav: { home: 'Rossa', collection: 'Collection', artists: 'Artists' },
+      nav: { home: 'Rossa', biography: 'Biography', collection: 'Collection', artists: 'Artists' },
       menu: 'Open menu', close: 'Close menu', language: 'Language', contact: 'Contact',
-      aboutCollector: 'About the collector', enter: 'View the collection', readBio: 'About Rossa',
+      aboutCollector: 'About Rossa',
+      enterTo: name => 'Enter the ' + name,
+      keepTo: (name, touch) => (touch ? 'Keep swiping to the ' : 'Keep scrolling to the ') + name,
       counts: (w, a) => w + (w === 1 ? ' work' : ' works') + ' by ' + a + (a === 1 ? ' artist' : ' artists'),
       biography: 'Collector profile', milestones: 'Collecting journey', collectionFact: 'Collection',
       walkCollection: 'Walk the collection', chapter: 'Collection',
@@ -347,19 +351,37 @@
       this.workItems = items.filter(it => it.kind === 'work');
       this.workItems.forEach((it, n) => { it.n = n; });
       this.active = -1; this.room = null; this.raf = 0; this.p = 0; this.bars = null;
+      this.ready = !this.opts.hold; this.on = null;
       // Gerak: posisi tampil (vis) mengejar posisi scroll (p) dengan inersia,
       // lukisan berayun di kawatnya mengikuti kecepatan, lalu tenang kembali.
       this.vis = null; this.vel = 0; this.ang = 0; this.angV = 0; this.anim = 0; this.last = 0;
       this.tick = now => this.step(now);
       this.assignRooms();
       this.section = document.createElement('section');
-      this.section.className = 'walk';
+      this.section.className = 'walk' + (this.opts.hold ? ' held' : ' drop');
       this.section.setAttribute('aria-label', t(L().walkLabel));
       this.section.innerHTML = '<div class="walk-sticky"><div class="walk-track"></div></div>';
       host.appendChild(this.section);
       this.sticky = this.section.firstElementChild;
       this.track = this.sticky.firstElementChild;
-      this.items.forEach(it => { it.el = this.buildItem(it); this.track.appendChild(it.el); });
+      // Tiap bab punya "ruang" sendiri. Di akhir bab, dinding turun: ruang
+      // berikutnya naik dari bawah menutupi layar, lalu jalan ke samping lagi.
+      this.groups = [];
+      this.items.forEach(it => {
+        let g = this.groups[this.groups.length - 1];
+        if (!g || (it.kind === 'intro' && g.items.some(x => x.kind === 'intro' || x.kind === 'work'))) {
+          g = { items: [], el: document.createElement('div') };
+          g.el.className = 'walk-ch';
+          this.groups.push(g);
+          this.track.appendChild(g.el);
+        }
+        it.g = g;
+        it.el = this.buildItem(it);
+        g.items.push(it);
+        g.el.appendChild(it.el);
+      });
+      this.groups.forEach(g => { const r = g.items.find(x => x.room); g.room = r ? r.room : 'linen'; g.el.dataset.room = g.room; });
+      if (this.groups.length > 1) this.section.classList.add('stacked');
       this.layout();
 
       this.onScroll = () => {
@@ -500,7 +522,24 @@
       this.trackW = x;
       this.track.style.width = x + 'px';
       this.maxX = Math.max(0, x - M.vw);
-      this.section.style.height = Math.round(this.maxX + M.vh) + 'px';
+      const lead = M.mobile ? 0 : (this.items[0] && this.items[0].kind === 'spacer' ? this.items[0].width : 0);
+      const V = M.vh;
+      let S = 0;
+      this.groups.forEach((g, j) => {
+        const first = g.items[0], last = g.items[g.items.length - 1];
+        g.x0 = first.x; g.x1 = last.x + last.width;
+        g.el.style.left = g.x0 + 'px';
+        g.el.style.width = (g.x1 - g.x0) + 'px';
+        const intro = g.items.find(x => x.kind === 'intro');
+        g.c0 = j === 0 ? 0 : clamp((intro ? intro.x : g.x0) - lead, 0, this.maxX);
+        g.c1 = j === this.groups.length - 1 ? this.maxX : clamp(Math.max(g.c0, g.x1 - M.vw), 0, this.maxX);
+        g.S = S;
+        g.L = g.c1 - g.c0;
+        S += g.L + (j < this.groups.length - 1 ? V : 0);
+      });
+      this.V = V;
+      this.total = S;
+      this.section.style.height = Math.round(this.total + M.vh) + 'px';
       let prevFloor = false;
       this.items.forEach((it, i) => {
         const f = it.el.querySelector('.floor');
@@ -524,12 +563,14 @@
       if (hint) hint.textContent = M.mobile ? L().hintSwipe : L().hintScroll;
       if (M.mobile) {
         box.style.cssText = 'left:22px;right:22px;top:' + Math.round(M.topH + 24) + 'px';
+        it.h = Math.round(M.topH + 24 + box.offsetHeight + 60);
         const bw = Math.min(240, M.vw - 90);
         bench.style.cssText = 'left:' + Math.round((M.vw - bw) / 2) + 'px;top:' + Math.round(M.topH + M.band - 104) + 'px;width:' + bw + 'px;height:auto';
         return M.vw;
       }
       const W = clamp(M.mainW * 0.40, 440, 640);
       box.style.cssText = 'left:0;top:' + Math.round(M.topH + M.band * 0.09) + 'px;width:' + Math.round(W) + 'px';
+      it.h = Math.round(M.topH + M.band * 0.09 + box.offsetHeight + 60);
       bench.style.cssText = 'left:' + Math.round(W * 0.1) + 'px;top:' + Math.round(M.topH + M.band * 0.985 - 62) + 'px';
       return W + clamp(M.mainW * 0.07, 70, 140);
     }
@@ -537,10 +578,12 @@
       const box = it.el.querySelector('.intro');
       if (M.mobile) {
         box.style.cssText = 'left:22px;right:22px;top:' + Math.round(M.topH + M.band * 0.26) + 'px';
+        it.h = Math.round(M.topH + M.band * 0.26 + box.offsetHeight + 60);
         return M.vw;
       }
       const W = clamp(M.mainW * 0.36, 360, 520);
       box.style.cssText = 'left:' + Math.round(M.mainW * 0.04) + 'px;top:' + Math.round(M.topH + M.band * 0.30) + 'px;width:' + Math.round(W) + 'px';
+      it.h = Math.round(M.topH + M.band * 0.30 + box.offsetHeight + 60);
       return W + M.mainW * 0.06;
     }
     lay_work(it, M) {
@@ -599,29 +642,76 @@
       return itemW;
     }
     focusX() { const M = this.M; return M.mobile ? M.vw / 2 : M.sideW + M.mainW * 0.45; }
-    targetFor(k) { const it = this.workItems[k]; return clamp(it.x + it.center - this.focusX(), 0, this.maxX); }
+    // Posisi gulir s -> bab aktif, posisi kamera (x) dan kemajuan turun t (0..1).
+    at(s) {
+      const gs = this.groups;
+      let j = 0;
+      while (j < gs.length - 1 && s > gs[j].S + gs[j].L + this.V) j++;
+      const g = gs[j];
+      if (s <= g.S + g.L || j === gs.length - 1) return { j, cam: g.c0 + clamp(s - g.S, 0, g.L), t: 0 };
+      return { j, cam: g.c1, t: clamp((s - g.S - g.L) / this.V, 0, 1) };
+    }
+    // Bab yang sedang di layar dan posisi kameranya (saat turun, bab baru setelah setengah jalan).
+    view(s) {
+      const a = this.at(s);
+      if (a.t >= 0.5 && this.groups[a.j + 1]) return { g: this.groups[a.j + 1], cam: this.groups[a.j + 1].c0 };
+      return { g: this.groups[a.j], cam: a.cam };
+    }
+    targetFor(k) {
+      const it = this.workItems[k], g = it.g;
+      const cam = clamp(it.x + it.center - this.focusX(), g.c0, g.c1);
+      return g.S + cam - g.c0;
+    }
     update(force) {
       const M = this.M;
       if (!M) return;
       const r = this.section.getBoundingClientRect();
-      const p = clamp(-r.top, 0, this.maxX);
+      const p = clamp(-r.top, 0, this.total);
       this.p = p;
+      const vw = this.view(p);
       if (force || this.vis === null || reduced()) { this.vis = p; this.vel = 0; this.paint(); }
       else this.kick();
       const engaged = r.top <= M.vh * 0.3;
       if (engaged !== this.engaged || force) { this.engaged = engaged; dock.classList.toggle('walk-off', !engaged); }
-      const fx = p + this.focusX();
+      const fx = vw.cam + this.focusX();
       let best = -1, bd = Infinity;
       this.workItems.forEach((it, k) => { const dd = Math.abs(it.x + it.center - fx); if (dd < bd) { bd = dd; best = k; } });
       if (best !== this.active || force) { this.active = best; this.updateDock(); }
+      this.markText(fx);
       let room;
       if (this.opts.context === 'artist' && r.top > M.vh * 0.4) room = this.opts.defaultRoom || 'silk';
       else {
-        const rx = p + M.vw * 0.55;
-        const it = this.items.find(x => rx >= x.x && rx < x.x + x.width) || this.items[this.items.length - 1];
-        room = it.room;
+        const rx = vw.cam + M.vw * 0.55;
+        const it = vw.g.items.find(x => rx >= x.x && rx < x.x + x.width) || vw.g.items[vw.g.items.length - 1];
+        room = it.room || vw.g.room;
       }
       if (room !== this.room || force) { this.room = room; setRoom(room); }
+    }
+    // Teks yang sedang di depan mata turun masuk; teks yang ditinggalkan naik keluar.
+    // Bab dan penutup aktif selama titik fokus ada di dalamnya; karya memakai jarak
+    // ke titik tengahnya, sehingga keterangan berganti saat lukisan berganti.
+    markText(fx) {
+      let cur = null;
+      if (this.ready) {
+        let bd = Infinity;
+        this.items.forEach(it => {
+          if (it.kind === 'spacer') return;
+          const d = it.kind === 'work' ? Math.abs(it.x + it.center - fx)
+            : (fx < it.x ? it.x - fx : fx > it.x + it.width ? fx - it.x - it.width : 0);
+          if (d < bd) { bd = d; cur = it; }
+        });
+      }
+      if (cur === this.on) return;
+      if (this.on) this.on.el.classList.remove('is-on');
+      this.on = cur;
+      if (cur) cur.el.classList.add('is-on');
+    }
+    release() {
+      if (this.ready) return;
+      this.ready = true;
+      this.section.classList.remove('held');
+      this.section.classList.add('drop');
+      this.update(true);
     }
     kick() {
       if (this.anim) return;
@@ -632,10 +722,10 @@
       this.anim = 0;
       const dt = Math.min(0.05, Math.max(0.001, (now - this.last) / 1000));
       this.last = now;
-      const prev = this.vis;
+      const prev = this.at(this.vis).cam;
       this.vis += (this.p - this.vis) * (1 - Math.exp(-dt / 0.12));
       if (Math.abs(this.p - this.vis) < 0.3) this.vis = this.p;
-      this.vel = (this.vis - prev) / dt;
+      this.vel = (this.at(this.vis).cam - prev) / dt;
       // pegas teredam: bagian bawah lukisan tertinggal saat dinding bergeser
       const goal = clamp(-this.vel * 0.0006, -1.4, 1.4);
       this.angV += (-70 * (this.ang - goal) - 6.5 * this.angV) * dt;
@@ -646,15 +736,27 @@
       if (moving) this.anim = requestAnimationFrame(this.tick);
     }
     paint() {
-      const M = this.M, vis = this.vis;
-      if (!M || vis === null) return;
-      this.track.style.transform = 'translate3d(' + (-vis).toFixed(2) + 'px,0,0)';
+      const M = this.M;
+      if (!M || this.vis === null) return;
+      const a = this.at(this.vis), H = M.vh;
+      this.groups.forEach((g, j) => {
+        let y, cam;
+        if (j < a.j) { y = -H; cam = g.c1; }
+        else if (j === a.j) { y = -a.t * H; cam = a.cam; }
+        else if (j === a.j + 1) { y = (1 - a.t) * H; cam = g.c0; }
+        else { y = H; cam = g.c0; }
+        g.cam = cam;
+        const off = Math.abs(y) >= H - 0.5;
+        if (g.off !== off) { g.off = off; g.el.style.visibility = off ? 'hidden' : ''; }
+        g.el.style.transform = 'translate3d(' + (-cam).toFixed(2) + 'px,' + y.toFixed(2) + 'px,0)';
+      });
       this.track.style.setProperty('--swing', this.ang.toFixed(3) + 'deg');
       const still = reduced();
-      const fx = vis + this.focusX(), reach = M.mobile ? M.vw * 0.62 : M.mainW * 0.55;
+      const reach = M.mobile ? M.vw * 0.62 : M.mainW * 0.55;
       const lead = this.items[0] ? this.items[0].width : 0;
       this.items.forEach(it => {
-        if (it.x + it.width < vis - M.vw * 0.5 || it.x > vis + M.vw * 1.5) return;
+        const vis = it.g.cam, fx = vis + this.focusX();
+        if (it.g.off || it.x + it.width < vis - M.vw * 0.5 || it.x > vis + M.vw * 1.5) return;
         if (it.kind === 'work') {
           const d = Math.abs(it.x + it.center - fx) / reach;
           const e = clamp((d - 0.22) / 0.78, 0, 1);
@@ -664,6 +766,13 @@
           const rest = Math.max(0, it.x - lead);
           const px = still ? 0 : clamp((vis - rest) * 0.22, -M.vw * 0.3, M.vw * 0.3);
           it.el.style.setProperty('--px', px.toFixed(1) + 'px');
+          // Teks bab ikut gulir: saat ditinggalkan naik dulu lalu memudar,
+          // saat didekati turun dari atas. Arah gulir menentukan sisi.
+          const a = clamp(Math.abs(vis - rest) / (M.mobile ? M.vw * 0.55 : M.mainW * 0.4), 0, 1);
+          const ty = still ? 0 : -(it.h || 400) * Math.pow(a, 1.35);
+          const op = 1 - clamp((a - 0.5) / 0.4, 0, 1);
+          it.el.style.setProperty('--ty', ty.toFixed(1) + 'px');
+          it.el.style.setProperty('--op', op.toFixed(3));
         }
       });
     }
@@ -675,8 +784,7 @@
     scrollToChapter(id, smooth) {
       const intro = this.items.find(x => x.kind === 'intro' && x.cat.id === id);
       if (intro) {
-        const lead = this.M.mobile ? 0 : this.items[0].width;
-        this.scrollToP(clamp(intro.x - lead, 0, this.maxX), smooth);
+        this.scrollToP(intro.g.S, smooth);
         return true;
       }
       const k = this.workItems.findIndex(x => x.w.slug === id);
@@ -810,17 +918,13 @@
           (collector.fullName ? '<span class="home-sub label">' + tx(collector.fullName) + '</span>' : '') +
         '</div>' +
         '<div class="home-body">' +
-          '<div class="home-about"><span class="label">' + tx(L().aboutCollector) + '</span><p>' + rich(collector.intro) + '</p></div>' +
-          '<div class="home-cta">' +
-            '<a class="btn-pill" href="#/collection" data-fresh>' + tx(L().enter) + ICON.right + '</a>' +
-            '<a class="link-u" href="#/biography" data-to-profile>' + tx(L().readBio) + '</a>' +
-          '</div>' +
+          '<div class="home-about"><span class="label">' + tx(L().aboutCollector) + '</span>' + [].concat(collector.intro || []).map(p => '<p>' + rich(p) + '</p>').join('') + '</div>' +
           (nW ? '<span class="home-count">' + esc(L().counts(nW, nA)) + '</span>' : '') +
         '</div>' +
+        chargeHTML('home') +
         (collector.portrait ? '<figure class="portrait"><img src="' + esc(collector.portrait) + '" alt="' + tx(collector.portraitAlt) + '" fetchpriority="high"></figure>' : '') +
-      '</section>' +
-      profileHTML();
-    splitHomeTitle();
+      '</section>';
+    if (!splashOn) splitHomeTitle();
     return '';
   }
 
@@ -874,36 +978,20 @@
     });
   }
 
-  // Profil Rossa sebagai kolektor. Dulu halaman Biografi tersendiri; kini satu
-  // halaman dengan beranda, tampil di bawah bagian pembuka. Alamat lama
-  // #/biography tetap berlaku dan langsung menggulir ke bagian ini.
-  function profileHTML() {
-    const catNames = CHAPTERS.filter(c => c !== OTHER).map(c => t(c.name));
-    const facts = (collector.facts || []).map(f => [t(f.label), t(f.value)]).filter(f => f[0] && f[1]);
-    if (catNames.length) facts.push([L().collectionFact, lowerRest(catNames)]);
-    const ms = collector.milestones || [];
-    return '<article class="page bio home-profile" id="profil" aria-labelledby="profil-title">' +
-        '<header class="bio-head"><div>' +
-          '<span class="label">' + tx(L().biography) + '</span>' +
-          '<h2 class="bio-title' + (collector.bioTitle ? ' long' : '') + '" id="profil-title">' + rich(collector.bioTitle || collector.name) + '</h2>' +
-          (collector.statement ? '<p class="bio-statement">' + rich(collector.statement) + '</p>' : '') +
-        '</div></header>' +
-        '<div class="bio-body">' +
-          (facts.length ? '<dl class="facts">' + facts.map(f => '<div><dt>' + esc(f[0]) + '</dt><dd>' + esc(f[1]) + '</dd></div>').join('') + '</dl>' : '<div></div>') +
-          '<div class="prose">' + (collector.biography || []).map(p => '<p>' + rich(p) + '</p>').join('') +
-            storyHTML(collector.story) + coverageHTML(collector.coverage) + '</div>' +
-        '</div>' +
-        (ms.length ? '<section class="milestones"><span class="label">' + tx(L().milestones) + '</span>' +
-          '<div class="ms-wrap"><ol class="ms-list">' +
-          ms.map(m => '<li><span class="ms-year">' + tx(m.year) + '</span><span class="ms-text">' + rich(m.text) + '</span></li>').join('') +
-          '</ol>' + photoHTML(collector.stagePhoto, 'stage-photo') + '</div></section>' : '') +
-        '<div class="page-end"><a class="btn-pill" href="#/collection" data-fresh>' + tx(L().walkCollection) + ICON.right + '</a></div>' +
-      '</article>';
+  // Tombol beranda yang "terisi" saat pengunjung terus menggulir; saat penuh,
+  // halaman berpindah. Keterangan di bawahnya muncul selama tombol terisi.
+  function chargeHTML(key) {
+    const k = PAGES.findIndex(p => p.key === key);
+    const next = PAGES[k + 1];
+    if (!next) return '';
+    const name = t(L().nav[next.key]);
+    const touch = !!(window.matchMedia && window.matchMedia('(hover: none)').matches);
+    return '<div class="charge"><a class="charge-btn" href="' + next.href + '">' +
+      '<span class="charge-fill" aria-hidden="true"></span>' +
+      '<span class="charge-label">' + esc(L().enterTo(name)) + '</span>' + ICON.right + '</a>' +
+      '<span class="charge-cap" aria-hidden="true">' + esc(L().keepTo(name, touch)) + '</span></div>';
   }
-  function scrollToProfile(smooth) {
-    const el = document.getElementById('profil');
-    if (el) window.scrollTo({ top: Math.round(el.getBoundingClientRect().top + window.scrollY), behavior: smooth && !reduced() ? 'smooth' : 'auto' });
-  }
+
 
   // Cerita kolektor: hanya tampil setelah Rossa menyampaikannya sendiri.
   function storyHTML(st) {
@@ -925,6 +1013,30 @@
       '<a href="#/index" data-fresh' + (active === 'index' ? ' aria-current="page"' : '') + '>' + tx(L().index) + '</a></nav>';
   }
 
+  // Pembuka situs: saat situs pertama kali dibuka, nama Rossa tertulis
+  // bersambung, lalu tirai naik dan isi halaman masuk.
+  let splashOn = false;
+  function playSplash(done) {
+    const el = document.createElement('div');
+    el.className = 'splash';
+    el.setAttribute('aria-hidden', 'true');
+    el.innerHTML = '<span class="sp-word">' + esc(plain(collector.name || 'Rossa')) + '</span>';
+    document.body.appendChild(el);
+    let started = false, finished = false;
+    const timers = [];
+    const finish = () => { if (!finished) { finished = true; done(); } };
+    const go = () => {
+      if (started) return;
+      started = true;
+      el.classList.add('play');
+      timers.push(setTimeout(() => { el.classList.add('lift'); splashOn = false; finish(); }, 1750));
+      timers.push(setTimeout(() => el.remove(), 2700));
+    };
+    const f = document.fonts && document.fonts.load ? document.fonts.load('400 80px "Pinyon Script"') : Promise.resolve();
+    f.then(go, go);
+    timers.push(setTimeout(go, 900));
+  }
+
   function renderCollection() {
     if (!WORKS.length) {
       main.innerHTML = '<section class="page"><h1 class="page-title">' + tx(L().nav.collection) + '</h1><p class="empty">' + tx(L().noWorks) + '</p></section>';
@@ -937,7 +1049,7 @@
       worksInCat(c).forEach(w => items.push({ kind: 'work', w }));
     });
     items.push({ kind: 'end', mode: 'collection' });
-    current.walk = new Walk(main.querySelector('.walk-host'), items, { context: 'collection' });
+    current.walk = new Walk(main.querySelector('.walk-host'), items, { context: 'collection', hold: splashOn });
     return t(L().nav.collection);
   }
 
@@ -1096,6 +1208,143 @@
   }
 
   /* ------------------------------------------------------------------
+     Pindah halaman dengan gulir atau usap
+     Halaman utama (Rossa, Koleksi, Seniman) berurutan ke samping.
+     Di tepi halaman, gulir terus mengisi garis di bawah layar; saat penuh,
+     halaman bergeser ke berikutnya. Usapan penuh langsung pindah halaman.
+     ------------------------------------------------------------------ */
+  const GATE_PX = 650;
+  const gateLine = document.createElement('div');
+  gateLine.className = 'gate-line';
+  gateLine.setAttribute('aria-hidden', 'true');
+  document.body.appendChild(gateLine);
+  let pendingDir = 0, leaving = false;
+
+  function goPage(j, dir) {
+    const p = PAGES[j];
+    if (!p || leaving) return;
+    pendingDir = dir; fresh = true;
+    if (reduced()) { location.hash = p.href; return; }
+    leaving = true;
+    main.classList.remove('enter', 'in-next', 'in-prev');
+    main.classList.add(dir > 0 ? 'out-next' : 'out-prev');
+    setTimeout(() => { leaving = false; location.hash = p.href; }, 360);
+  }
+
+  class Gate {
+    constructor(idx, opts) {
+      this.idx = idx; this.lock = !!opts.lock; this.el = opts.scroller || null;
+      this.prog = 0; this.dir = 0; this.lastIn = 0; this.raf = 0; this.edgeAt = { 1: 0, '-1': 0 }; this.ts = null;
+      this.onWheel = e => this.wheel(e);
+      this.onTS = e => { if (e.touches.length === 1) { const p = e.touches[0]; this.ts = { x: p.clientX, y: p.clientY, a: this.atEdge(1), b: this.atEdge(-1) }; } };
+      this.onTM = e => {
+        // Layar ponsel pendek: teks beranda boleh digulir di tempat.
+        const box = e.target instanceof Element ? e.target.closest('.home-body') : null;
+        if (box && box.scrollHeight > box.clientHeight + 1) return;
+        if (this.lock && !this.el && e.cancelable) e.preventDefault();
+      };
+      this.onTE = e => this.touchEnd(e);
+      this.onKey = e => this.key(e);
+      window.addEventListener('wheel', this.onWheel, { passive: false });
+      window.addEventListener('touchstart', this.onTS, { passive: true });
+      window.addEventListener('touchmove', this.onTM, { passive: false });
+      window.addEventListener('touchend', this.onTE, { passive: true });
+      document.addEventListener('keydown', this.onKey);
+    }
+    destroy() {
+      window.removeEventListener('wheel', this.onWheel);
+      window.removeEventListener('touchstart', this.onTS);
+      window.removeEventListener('touchmove', this.onTM);
+      window.removeEventListener('touchend', this.onTE);
+      document.removeEventListener('keydown', this.onKey);
+      if (this.raf) cancelAnimationFrame(this.raf);
+      this.prog = 0; this.paint();
+    }
+    blocked() {
+      const lb = document.getElementById('lightbox');
+      return !menu.hidden || leaving || (lb && !lb.hidden) || !!document.querySelector('.splash:not(.lift)');
+    }
+    pos() {
+      if (this.el) return { p: this.el.scrollLeft, max: this.el.scrollWidth - this.el.clientWidth };
+      return { p: window.scrollY, max: document.documentElement.scrollHeight - window.innerHeight };
+    }
+    atEdge(dir) { const q = this.pos(); return dir > 0 ? q.p >= q.max - 2 : q.p <= 2; }
+    hasTarget(dir) { const j = this.idx + dir; return j >= 0 && j < PAGES.length; }
+    wheel(e) {
+      if (e.ctrlKey || this.blocked()) return;
+      let d = Math.abs(e.deltaY) >= Math.abs(e.deltaX) ? e.deltaY : e.deltaX;
+      if (e.deltaMode === 1) d *= 40; else if (e.deltaMode === 2) d *= window.innerHeight;
+      if (!d) return;
+      const dir = d > 0 ? 1 : -1;
+      if (this.lock) e.preventDefault();
+      const now = performance.now();
+      if (!this.atEdge(dir)) {
+        this.edgeAt[dir] = 0;
+        if (this.el) this.el.scrollLeft += d;
+        this.prog = 0; this.paint();
+        return;
+      }
+      // Halaman yang bisa digulir: tunggu sejenak di tepi agar sisa momentum
+      // gulir tidak langsung melempar ke halaman berikutnya.
+      if (this.el || !this.lock) {
+        if (!this.edgeAt[dir]) { this.edgeAt[dir] = now; return; }
+        if (now - this.edgeAt[dir] < 380) return;
+      }
+      if (!this.hasTarget(dir)) return;
+      if (dir !== this.dir) { this.prog = 0; this.dir = dir; }
+      this.prog = Math.min(1, this.prog + Math.min(Math.abs(d), 120) / GATE_PX);
+      this.lastIn = now;
+      this.paint();
+      if (this.prog >= 1) { goPage(this.idx + dir, dir); return; }
+      this.loop();
+    }
+    loop() {
+      if (this.raf) return;
+      const f = () => {
+        this.raf = 0;
+        if (leaving) return;
+        if (performance.now() - this.lastIn > 180) this.prog = Math.max(0, this.prog - 0.03);
+        this.paint();
+        if (this.prog > 0) this.raf = requestAnimationFrame(f);
+      };
+      this.raf = requestAnimationFrame(f);
+    }
+    paint() {
+      gateLine.style.transformOrigin = this.dir < 0 ? 'right' : 'left';
+      gateLine.style.transform = 'scaleX(' + this.prog.toFixed(3) + ')';
+      main.style.setProperty('--gate', this.dir < 0 ? 0 : this.prog.toFixed(3));
+    }
+    touchEnd(e) {
+      const s = this.ts; this.ts = null;
+      if (!s || this.blocked()) return;
+      const p = e.changedTouches[0];
+      const dx = p.clientX - s.x, dy = p.clientY - s.y;
+      const d = Math.abs(dx) > Math.abs(dy) ? -dx : -dy;
+      if (Math.abs(d) < 70) return;
+      const dir = d > 0 ? 1 : -1;
+      if (!(dir > 0 ? s.a : s.b) || !this.atEdge(dir) || !this.hasTarget(dir)) return;
+      this.dir = dir;
+      goPage(this.idx + dir, dir);
+    }
+    key(e) {
+      if (!this.lock || e.defaultPrevented || e.altKey || e.ctrlKey || e.metaKey || this.blocked()) return;
+      const k = e.key, tg = e.target instanceof Element ? e.target : null;
+      if (tg && tg.closest('input, textarea, select, [contenteditable]')) return;
+      if (k === ' ' && tg && tg.closest('a, button')) return;
+      let dir = 0;
+      if (k === 'ArrowRight' || k === 'ArrowDown' || k === 'PageDown' || (k === ' ' && !e.shiftKey)) dir = 1;
+      else if (k === 'ArrowLeft' || k === 'ArrowUp' || k === 'PageUp' || (k === ' ' && e.shiftKey)) dir = -1;
+      if (!dir) return;
+      e.preventDefault();
+      if (this.el && !this.atEdge(dir)) {
+        this.el.scrollBy({ left: dir * this.el.clientWidth * 0.8, behavior: reduced() ? 'auto' : 'smooth' });
+        return;
+      }
+      if (this.hasTarget(dir)) { this.dir = dir; goPage(this.idx + dir, dir); }
+    }
+  }
+
+  /* ------------------------------------------------------------------
      Rute
      ------------------------------------------------------------------ */
   function parseRoute() {
@@ -1104,7 +1353,7 @@
     const parts = raw.split('/').filter(Boolean);
     const a = parts[0], b = parts[1];
     if (!a) return { name: 'home', page: 'home', key: '/' };
-    if (a === 'biography') return { name: 'home', page: 'home', key: '/', profile: true };
+    if (a === 'biography') return { name: 'home', page: 'home', key: '/' };
     if (a === 'collection') return { name: 'collection', page: 'collection', focus: b || null, key: '/collection' };
     if (a === 'index') return { name: 'index', page: 'collection', filter: b || null, key: '/index/' + (b || '') };
     if (a === 'artists') return b ? { name: 'artist', page: 'artists', slug: b, key: '/artists/' + b } : { name: 'artists', page: 'artists', key: '/artists' };
@@ -1112,8 +1361,9 @@
     return { name: 'notfound', page: null, key: '/404' };
   }
 
-  let current = { route: null, cleanup: [], walk: null, stage: null };
+  let current = { route: null, cleanup: [], walk: null, stage: null, gate: null };
   let fresh = false;
+  let firstRender = true;
   let navCount = 0;
   let lastKey = null;
   const scrollMem = new Map();
@@ -1124,14 +1374,30 @@
     const route = parseRoute();
     current.cleanup.forEach(fn => { try { fn(); } catch (e) { /* abaikan */ } });
     if (current.walk) current.walk.destroy();
-    current = { route, cleanup: [], walk: null, stage: null };
+    if (current.gate) current.gate.destroy();
+    current = { route, cleanup: [], walk: null, stage: null, gate: null };
+    const dirIn = pendingDir; pendingDir = 0;
+    if (firstRender) {
+      firstRender = false;
+      if (!reduced()) {
+        splashOn = true;
+        playSplash(() => {
+          if (current.walk) current.walk.release();
+          if (current.route && current.route.name === 'home') splitHomeTitle();
+        });
+      }
+    }
+    const lock = route.name === 'home';
+    document.body.classList.toggle('one-screen', lock);
+    document.documentElement.classList.toggle('one-screen', lock);
     closeMenu(false);
     document.documentElement.lang = lang;
     renderShell(route.page);
     setRoom('silk');
-    main.classList.remove('enter');
+    main.classList.remove('enter', 'in-next', 'in-prev', 'out-next', 'out-prev');
+    main.style.removeProperty('--gate');
     void main.offsetWidth;
-    main.classList.add('enter');
+    main.classList.add(dirIn > 0 ? 'in-next' : dirIn < 0 ? 'in-prev' : 'enter');
     let title;
     switch (route.name) {
       case 'home': title = renderHome(); break;
@@ -1143,6 +1409,10 @@
       default: title = renderNotFound();
     }
     renderDock(route);
+    const pageIdx = PAGES.findIndex(p => p.key === route.page);
+    if (pageIdx >= 0 && (route.name === 'home' || route.name === 'collection' || route.name === 'artists')) {
+      current.gate = new Gate(pageIdx, { lock });
+    }
     const site = plain(settings.siteName || collector.name || 'Rossa');
     document.title = title ? title + ' · ' + site : site + ' · ' + plain(settings.siteSubtitle);
 
@@ -1153,7 +1423,10 @@
     window.scrollTo(0, y);
     requestAnimationFrame(() => {
       if (wantFocus && current.walk) current.walk.scrollToChapter(route.focus, false);
-      else if (route.profile && opts.keepScroll == null) scrollToProfile(false);
+      else if (dirIn < 0 && current.gate) {
+        if (current.gate.el) current.gate.el.scrollLeft = current.gate.el.scrollWidth;
+        else window.scrollTo(0, document.documentElement.scrollHeight);
+      }
       else window.scrollTo(0, y);
       if (current.walk) current.walk.update(true);
     });
@@ -1188,8 +1461,15 @@
     }
     const first = tgt.closest('[data-walk-first]');
     if (first && current.walk) { e.preventDefault(); current.walk.scrollToWork(0, true); return; }
-    if (tgt.closest('[data-to-profile]') && document.getElementById('profil')) { e.preventDefault(); scrollToProfile(true); return; }
     const a = tgt.closest('a[href^="#"]');
+    if (a && current.gate) {
+      const j = PAGES.findIndex(p => p.href === a.getAttribute('href'));
+      if (j >= 0 && j !== current.gate.idx) {
+        e.preventDefault(); closeMenu(false);
+        goPage(j, j > current.gate.idx ? 1 : -1);
+        return;
+      }
+    }
     if (a) {
       if (a.hasAttribute('data-fresh')) fresh = true;
       const href = a.getAttribute('href');
