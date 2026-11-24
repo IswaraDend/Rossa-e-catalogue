@@ -820,7 +820,58 @@
         '</div>' +
         (collector.portrait ? '<figure class="portrait"><img src="' + esc(collector.portrait) + '" alt="' + tx(collector.portraitAlt) + '" fetchpriority="high"></figure>' : '') +
       '</section>';
+    splitHomeTitle();
     return '';
+  }
+
+  // Judul beranda dipecah per huruf (GSAP SplitText), lalu tiap huruf naik dari
+  // balik garis judul. Tanpa GSAP, atau bila pengguna memilih "kurangi gerak",
+  // animasi CSS biasa (riseIn) yang berjalan.
+  function splitHomeTitle() {
+    const h = main.querySelector('.home-title');
+    const G = window.gsap, ST = window.SplitText;
+    if (!h || !G || !ST || reduced()) return;
+    G.registerPlugin(ST);
+    h.classList.add('is-split');
+    const split = ST.create(h.querySelectorAll('.l1, .l2'), {
+      type: 'lines,chars', tag: 'span', mask: 'lines',
+      linesClass: 'ht-line', charsClass: 'ht-char',
+      autoSplit: true,
+      onSplit(self) {
+        self.lines.forEach(line => keepKerning(line, self.chars.filter(c => line.contains(c))));
+        G.set(h, { visibility: 'visible' });
+        const first = self.chars.filter(c => !c.closest('.l2'));
+        const second = self.chars.filter(c => c.closest('.l2'));
+        const from = { yPercent: 118, duration: 1.3, ease: 'expo.out', stagger: 0.05 };
+        return G.timeline()
+          .from(first, Object.assign({}, from), 0.1)
+          .from(second, Object.assign({}, from, { rotation: 5, transformOrigin: '0% 100%' }), 0.32);
+      }
+    });
+    current.cleanup.push(() => split.revert());
+  }
+
+  // Huruf yang dipecah jadi kotak terpisah kehilangan kerning font, sehingga
+  // judul jadi sedikit lebih lebar. Posisi asli tiap huruf diukur dari teks
+  // utuh, lalu selisihnya ditutup dengan margin kiri.
+  function keepKerning(line, chars) {
+    if (chars.length < 2) return;
+    const probe = document.createElement('span');
+    probe.setAttribute('aria-hidden', 'true');
+    probe.style.cssText = 'position:absolute;left:0;top:0;visibility:hidden;white-space:pre';
+    probe.textContent = chars.map(c => c.textContent).join('');
+    line.appendChild(probe);
+    const node = probe.firstChild, range = document.createRange(), x0 = probe.getBoundingClientRect().left;
+    let pos = 0;
+    const nat = chars.map(c => {
+      range.setStart(node, pos); pos += c.textContent.length; range.setEnd(node, pos);
+      return range.getBoundingClientRect().left - x0;
+    });
+    const widths = chars.map(c => c.getBoundingClientRect().width);
+    probe.remove();
+    chars.forEach((c, i) => {
+      if (i) c.style.marginLeft = (nat[i] - nat[i - 1] - widths[i - 1]).toFixed(2) + 'px';
+    });
   }
 
   function renderBiography() {

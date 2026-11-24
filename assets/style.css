@@ -543,6 +543,13 @@ main.enter{animation:pageIn .5s var(--ease) both}
 /* beranda */
 .home-title .l1{animation:riseIn 1s var(--ease) .05s both}
 .home-title .l2{animation:riseIn 1s var(--ease) .2s both}
+/* SplitText (app.js: splitHomeTitle). Judul disembunyikan sampai huruf siap dipecah;
+   masker baris diberi ruang lebih agar ekor huruf dan miring italic tidak terpotong. */
+.home-title.is-split{visibility:hidden}
+.home-title.is-split .l1,.home-title.is-split .l2{animation:none;display:flow-root}
+.home-title .ht-line-mask{display:block;width:max-content;padding:.14em .12em .2em 0;margin:-.14em -.12em -.2em 0}
+.home-title .ht-line{display:block}
+.home-title .ht-char{display:inline-block;vertical-align:top;will-change:transform}
 .home-sub{animation:fadeIn .9s var(--ease) .45s both}
 .home-about{animation:riseIn .9s var(--ease) .55s both}
 .home-cta{animation:riseIn .9s var(--ease) .68s both}

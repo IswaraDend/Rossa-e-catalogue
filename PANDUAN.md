@@ -13,6 +13,7 @@ rossa-collection/
     works/          foto karya
     artists/        foto seniman (opsional)
   assets/           tampilan dan mesin situs, tidak perlu diubah
+    vendor/         pustaka animasi GSAP (lihat bagian 10)
 ```
 
 Yang perlu disentuh hanya `content.js` dan folder `images/`.
@@ -150,3 +151,18 @@ Data koleksi seni Rossa tidak ditemukan di sumber publik, jadi seluruh daftar ka
 ## 9. Huruf
 
 Situs memakai Cormorant Garamond (SIL Open Font License, lisensi ada di `assets/fonts/`). File huruf sudah disertakan, jadi tampilan tetap sama walau dibuka tanpa internet.
+
+## 10. Animasi (GSAP)
+
+Gerak tambahan memakai [GSAP](https://gsap.com) 3.15.1, gratis untuk situs ini di bawah GSAP Standard License. File-nya sudah disertakan di `assets/vendor/` (`gsap.min.js` dan `SplitText.min.js`), jadi situs tetap jalan tanpa internet.
+
+Yang sudah memakai GSAP:
+
+- **Judul beranda**: dipecah per huruf (SplitText), tiap huruf naik dari balik garis judul. Baris kedua menyusul dengan sedikit kemiringan.
+
+Catatan:
+
+- Bila pengunjung memilih "kurangi gerak" di perangkatnya, atau file GSAP tidak terbaca, judul memakai animasi masuk biasa.
+- Pembaca layar tetap membaca judul utuh ("Koleksi Rossa"), bukan per huruf.
+- Saat memperbarui GSAP, ganti kedua file di `assets/vendor/` dengan versi yang sama dari paket npm `gsap` (folder `dist/`).
+
