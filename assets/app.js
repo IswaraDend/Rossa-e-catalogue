@@ -1014,7 +1014,7 @@
   }
 
   // Pembuka situs: saat situs pertama kali dibuka, nama Rossa tertulis
-  // bersambung, lalu tirai naik dan isi halaman masuk.
+  // bersambung, lalu tulisan membesar (zoom in) dan halaman Rossa muncul.
   let splashOn = false;
   function playSplash(done) {
     const el = document.createElement('div');
@@ -1029,8 +1029,9 @@
       if (started) return;
       started = true;
       el.classList.add('play');
-      timers.push(setTimeout(() => { el.classList.add('lift'); splashOn = false; finish(); }, 1750));
-      timers.push(setTimeout(() => el.remove(), 2700));
+      timers.push(setTimeout(() => { el.classList.add('lift'); splashOn = false; }, 1750));
+      timers.push(setTimeout(finish, 2250));
+      timers.push(setTimeout(() => el.remove(), 3100));
     };
     const f = document.fonts && document.fonts.load ? document.fonts.load('400 80px "Pinyon Script"') : Promise.resolve();
     f.then(go, go);
@@ -1276,6 +1277,10 @@
       if (e.deltaMode === 1) d *= 40; else if (e.deltaMode === 2) d *= window.innerHeight;
       if (!d) return;
       const dir = d > 0 ? 1 : -1;
+      // Teks beranda yang tidak muat (layar pendek) digulir dulu di tempat.
+      const box = e.target instanceof Element ? e.target.closest('.home-body') : null;
+      if (box && box.scrollHeight > box.clientHeight + 1 &&
+          (dir > 0 ? box.scrollTop + box.clientHeight < box.scrollHeight - 1 : box.scrollTop > 0)) return;
       if (this.lock) e.preventDefault();
       const now = performance.now();
       if (!this.atEdge(dir)) {
