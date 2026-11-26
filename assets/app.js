@@ -1345,7 +1345,8 @@
         });
       }
     }
-    const lock = route.name === 'home';
+    // Beranda satu layar hanya di layar lebar; di ponsel beranda digulir biasa.
+    const lock = route.name === 'home' && !isNarrow();
     document.body.classList.toggle('one-screen', lock);
     document.documentElement.classList.toggle('one-screen', lock);
     closeMenu(false);
@@ -1477,6 +1478,7 @@
     }, 150);
   }
 
+  const isNarrow = () => window.innerWidth < 900;
   let rsT = 0, lastW = window.innerWidth, lastH = window.innerHeight;
   window.addEventListener('resize', () => {
     clearTimeout(rsT);
@@ -1484,6 +1486,11 @@
       const w = window.innerWidth, h = window.innerHeight;
       if (w === lastW && Math.abs(h - lastH) < 90) return;
       lastW = w; lastH = h;
+      // Melewati batas ponsel/layar lebar di beranda: susun ulang halamannya.
+      if (current.route && current.route.name === 'home' && document.body.classList.contains('one-screen') === isNarrow()) {
+        render({ keepScroll: 0 });
+        return;
+      }
       if (current.walk) {
         const wk = current.walk, k = wk.active, moved = wk.p > 4;
         wk.layout();

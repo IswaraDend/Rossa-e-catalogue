@@ -544,24 +544,19 @@ body.one-screen .home{min-height:0;height:100%}
   .intro-text{font-size:18px}
   .intro-hint{margin-top:26px}
 
-  .home{grid-template-columns:1fr;grid-template-rows:auto;grid-template-areas:"head" "portrait" "body";gap:0;padding:28px 20px 150px}
-  body.one-screen .home{grid-template-rows:auto minmax(0,1fr) auto;grid-template-areas:"head" "body" "cta";padding:18px 20px 104px}
-  body.one-screen .home .portrait{display:none}
-  body.one-screen .home-body{min-height:0;overflow-y:auto;overscroll-behavior:contain;scrollbar-width:none}
-  body.one-screen .home-title{font-size:clamp(40px,11vw,56px)}
-  body.one-screen .home-sub{margin-top:12px}
-  body.one-screen .home-about{margin-top:18px}
-  body.one-screen .home-about .label{display:none}
-  body.one-screen .home-about p{font-size:17px;line-height:1.45}
-  body.one-screen .home-count{margin-top:10px;font-size:14px}
-  body.one-screen .charge{margin-top:14px}
+  /* Ponsel: beranda jadi halaman biasa yang digulir ke bawah (teks lalu tombol).
+     Di ujung bawah, usap ke atas pindah ke Koleksi. Foto Rossa tidak ditampilkan. */
+  .home{grid-template-columns:1fr;grid-template-rows:auto;grid-template-areas:"head" "body" "cta";gap:0;min-height:0;padding:26px 20px 150px}
+  .home .portrait{display:none}
+  .home-title{font-size:clamp(46px,13.5vw,64px)}
+  .home-sub{margin-top:14px}
+  .home-about{margin-top:28px;max-width:none}
+  .home-about p{font-size:17.5px;line-height:1.6}
+  .home-about p + p{margin-top:.8em}
+  .home-count{margin-top:18px;font-size:14.5px}
+  .charge{margin-top:26px}
   .charge-cap{display:none}
-  body.one-screen .charge-btn{font-size:17px;padding:11px 22px 11px 24px}
-  .home-title{font-size:clamp(64px,19vw,96px)}
-  .home-sub{margin-top:18px}
-  .home .portrait{justify-self:stretch;margin:42px 14px 10px 14px}
-  .home .portrait img{height:auto;width:100%}
-  .home-about{margin-top:34px}
+  .charge-btn{font-size:17px;padding:12px 24px 12px 26px}
 
   .page{padding:36px 20px 170px}
   .bio-head{grid-template-columns:1fr}
@@ -595,6 +590,10 @@ body.one-screen .home{min-height:0;height:100%}
   .side:has(> .draft-tag) .brand-sub{display:none}
 }
 @media (max-width:899px) and (min-width:600px){
+  .home{padding:56px 56px 170px}
+  .home-title{font-size:clamp(64px,9vw,80px)}
+  .home-about{max-width:58ch}
+  .home-about p{font-size:19px}
   .grid{grid-template-columns:repeat(3,minmax(0,1fr))}
 }
 @media (hover:none){
